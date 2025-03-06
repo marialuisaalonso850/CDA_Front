@@ -1,0 +1,16 @@
+.btn-send {
+    background-color: #007bff; /* Color azul por defecto */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Animación de transición */
+  }
+  
+  /* Estilo al pasar el cursor sobre el botón (color verde) */
+  .btn-send:hover {
+    background-color: #4caf50; /* Color verde al pasar el cursor */
+  }
+  .header-contact{
+    color: antiquewhite;
+  }
