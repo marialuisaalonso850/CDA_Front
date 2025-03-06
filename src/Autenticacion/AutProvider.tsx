@@ -1,5 +1,5 @@
 import React, { useContext, createContext, useState, useEffect } from "react";
-import type { AccessTokenResponse, AuthResponse, User, parqueadero } from "../types/types";
+import type { AccessTokenResponse, AuthResponse, User } from "../types/types";
 import { API_URL } from "../Autenticacion/constanst";
 
 interface AuthProviderProps {
@@ -13,8 +13,7 @@ const AuthContext = createContext<ExtendedAuthContext>({
   getRefreshToken: () => null,
   getUser: () => ({} as User | undefined),
   signOut: () => {},
-  getParqueadero: () => ({} as parqueadero | undefined),
-  createParqueadero: (newParqueadero: parqueadero) => {},
+  
 });
 
 interface ExtendedAuthContext {
@@ -24,8 +23,7 @@ interface ExtendedAuthContext {
   getRefreshToken: () => string | null;
   getUser: () => User | undefined;
   signOut: () => void;
-  getParqueadero: () => parqueadero | undefined;
-  createParqueadero: (newParqueadero: parqueadero) => void;
+
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
@@ -33,7 +31,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [accessToken, setAccessToken] = useState<string>("");
   const [user, setUser] = useState<User>();
   const [isLoading, setIsLoading] = useState(true);
-  //const [parqueadero, setParqueadero] = useState<parqueadero | undefined>();
+  
 
   useEffect(() => {
     checkAuth();
@@ -147,13 +145,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             userData.body.accessToken, 
             userData.body.refreshToken );
     };
-    //function saveParqueadero(parqueaderoData: AuthResponse) {
-     //   setParqueadero(parqueaderoData.body.parqueadero);
-     // }
-    
-      //function getParqueadero() {
-       // return parqueadero;
-     // }
+  
 
     function getUser(){
         return user;

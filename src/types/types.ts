@@ -1,7 +1,6 @@
 export interface AuthResponse{
     body: {
         user: User;
-        parqueadero: parqueadero;
         accessToken: string;
         refreshToken: string;
     };
@@ -20,12 +19,7 @@ export interface User{
     name: string;
     username: string;
 }
-export interface parqueadero{
-    _id: string;
-    nombre: string;
-    longitud: string;
-    altura:string ;
-}
+
 
 export interface AccessTokenResponse{
     statusCode: number;
