@@ -10,7 +10,7 @@ export default function Signup(){
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errorResponse, setErrorResponse] = useState("")
+  const [errorResponse, setErrorResponse] = useState("");
 
   const auth = useAuth();
   const goto = useNavigate();

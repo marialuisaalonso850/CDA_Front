@@ -1,0 +1,16 @@
+.btn-send {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-send:hover {
+    background-color: #4caf50;
+  }
+  
+  .header-contact{
+    color: antiquewhite;
+  }

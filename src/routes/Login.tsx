@@ -7,13 +7,12 @@ import type { AuthResponse, AuthResponseError } from "../types/types";
 import React from "react";
 
 export default function Login(){
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errorResponse, setErrorResponse] = useState("")
+  const [errorResponse, setErrorResponse] = useState("");
+
   const auth = useAuth();
   const goto = useNavigate();
-
   
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>){
     e.preventDefault();
@@ -79,5 +78,4 @@ export default function Login(){
     </DefaultLayout>
   
   )
-  
 }

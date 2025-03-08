@@ -2,6 +2,7 @@ import React from "react";
 import { useAuth } from "../Autenticacion/AutProvider";
 import { Link } from "react-router-dom";
 import { API_URL } from "../Autenticacion/constanst";
+import logo from "../assets/image.png"; 
 export default function PortalLayout({children}: {children:React.ReactNode}){
  const auth = useAuth();
 
@@ -19,31 +20,30 @@ export default function PortalLayout({children}: {children:React.ReactNode}){
             if(response.ok){
                 auth.signOut();
             }
-        } catch (error) {
-            
-        }
+        } catch (error) {     
+      }
     }
 
     return (
-        <>
+      <>
         <header>
-          <nav>
-            <ul>
-              <li>
-                <Link to="/Perfil">Perfil</Link>
-              </li>
-             
-              <li>
-                <Link to="/citas">Agendar cita </Link>
-              </li>
-              <li>
-              <Link to="/Home">Salir</Link>
-              </li>
-            </ul>
+          <nav style={{ display: "flex", alignItems: "center", padding: "10px", backgroundColor: "green" }}>
+            <Link to="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
+              <img
+                src={logo}
+                alt="CDA Logo"
+                style={{
+                  height: "50px",
+                  width: "auto",
+                  display: "block"
+                }}
+              />
+              <span style={{ color: "white", fontSize: "16px", fontWeight: "bold" }}>Salir</span>
+            </Link>
           </nav>
         </header>
-  
+    
         <main>{children}</main>
       </>
-    )
+    );
 }

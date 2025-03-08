@@ -1,45 +1,22 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App'
-import './index.css'
+import './css/index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Login from './routes/Login'
-import Signup from './routes/signup'
-import Dashboard from './routes/dashboard'
 import ProtectedRoute from './routes/protectedRaute'
 import { AuthProvider } from './Autenticacion/AutProvider'
 import Home from './routes/Home'
-import Perfil from './routes/perfil'
-import ContactUs from './routes/contactUs'
-import InfoParqueadero from './routes/infoParqueadero'
 import AgendarCita from './routes/agendarCita'
+import Login from './routes/Login'
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Login/>
-  },
-  {
-    path: "/signup",
-    element: <Signup/>
-  },
-  {
-    path: "/Home",
     element: <Home/>
   },
   {
-    path: "/Perfil",
-    element: <Perfil/>
+    path: "/login",
+    element: <Login/>
   },
-  {
-    path: "/infoParqueadero",
-    element: <InfoParqueadero/>
-  },
-  {
-    path: "/ContactUs",
-    element: <ContactUs/>
-  },
- 
   {
     path: "/citas",
     element: <AgendarCita/>
@@ -49,8 +26,8 @@ const router = createBrowserRouter([
     element: <ProtectedRoute/>,
     children:[
       {
-        path: "/Dashboard",
-        element: <Dashboard/>
+        path: "/",
+        element: <Home/>
       }
       
     ]
