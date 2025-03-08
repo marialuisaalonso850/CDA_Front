@@ -2,7 +2,7 @@ import { useAuth } from "../Autenticacion/AutProvider"
 import { useState, useEffect } from "react";
 import { API_URL } from "../Autenticacion/constanst";
 import PortalLayout from "../layout/PortalLayout";
-import React from "react";
+
 
 interface Todo {
   _id: string,
@@ -14,7 +14,7 @@ interface Todo {
 export default function Dashboard(){
 
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [title, seTitle]= useState("");
+  const []= useState("");
 
   const auth = useAuth();
 
@@ -22,35 +22,7 @@ export default function Dashboard(){
     loadTodos();
   }, []);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>){
-    e.preventDefault();
-    
-    createTodo();
-  }
 
-  async function createTodo() {
-    try {
-      const response = await fetch(`${API_URL}/todos`,{
-        method:"POST",
-        headers:{
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${auth.getAccessToken()}`
-        },
-        body: JSON.stringify({
-          title,
-        }),
-      });
-
-      if(response.ok){
-        const json = await response.json();
-        setTodos([json,... todos]);
-      }else{
-
-      }
-    } catch (error) {
-      
-    }
-  }
 
   async function loadTodos() {
     try {

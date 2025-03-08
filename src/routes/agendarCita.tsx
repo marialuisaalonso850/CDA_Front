@@ -17,7 +17,7 @@ export default function AgendarCita() {
   const [placaValida, setPlacaValida] = useState<boolean | null>(null);
   const [cdaSeleccionado, setCdaSeleccionado] = useState("");
   const [captchaToken, setCaptchaToken] = useState("");
-  const [citaReservada, setCitaReservada] = useState<any>(null);
+  const [, setCitaReservada] = useState<any>(null);
 
   const validarCorreo = (correo: string) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

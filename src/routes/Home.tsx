@@ -33,8 +33,7 @@ export const Home = () => {
             margin: '50px'
           }}
           
-          onMouseOver={(e) => e.target.style.backgroundColor = '#0056b3'}
-          onMouseOut={(e) => e.target.style.backgroundColor = '#007BFF'}
+         
         >
           Agendar Cita
         </button>

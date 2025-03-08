@@ -9,7 +9,7 @@ interface AuthProviderProps {
 const AuthContext = createContext<ExtendedAuthContext>({
   esAutentico: false,
   getAccessToken: () => "",
-  saveUser: (userData: AuthResponse) => {},
+  saveUser: () => {},
   getRefreshToken: () => null,
   getUser: () => ({} as User | undefined),
   signOut: () => {},
