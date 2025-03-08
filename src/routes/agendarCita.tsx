@@ -37,6 +37,21 @@ export default function AgendarCita() {
     setPlacaValida(regex.test(placa));
   };
 
+  const limpiarCampos = () => {
+    setNombre("");
+    setCorreo("");
+    setCorreoValido(null);
+    setTelefono("");
+    setTelefonoValido(null);
+    setFechaCita("");
+    setHoraCita("");
+    setPlaca("");
+    setPlacaValida(null);
+    setCdaSeleccionado("");
+    setCaptchaToken("");
+    setCitaReservada(null);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -80,7 +95,29 @@ export default function AgendarCita() {
       if (!response.ok) throw new Error(data.error || "Error al agendar cita");
 
       setCitaReservada(data);
-      Swal.fire({ title: "¡Cita agendada!", text: "Tu cita ha sido registrada.", icon: "success" });
+
+      // Formatear fecha y hora
+      const fechaFormateada = new Date(fechaCita).toLocaleDateString("es-ES");
+      const horaFormateada = new Date(`1970-01-01T${horaCita}:00Z`).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+
+      Swal.fire({
+        title: "¡Cita agendada con éxito! 🎉",
+        html: `
+          <b>👤 Senor@ Nombre :</b> ${nombre} <br>
+          <b>📅 La fecha de su cita es :</b> ${fechaFormateada} <br>
+          <b>⏰ La hora :</b> ${horaFormateada} <br>
+          <b>🚗 Su Placa:</b> ${placa} <br>
+          <b>🏢 LA CDA:</b> ${cdaSeleccionado} <br>
+          <b>📩 Correo:</b> ${correo} <br>
+          <b>📞 Teléfono:</b> ${telefono} 
+           <b>Gracias por agendar su cita con CDA Sáman <br>
+        `,
+        icon: "success",
+        confirmButtonText: "Aceptar",
+      });
+
+      limpiarCampos(); 
+
     } catch (error) {
       console.error("Error al agendar cita:", error);
       Swal.fire({ title: "Error", text: "Hubo un problema al agendar la cita.", icon: "error" });
