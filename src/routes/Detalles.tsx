@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import '../css/Contac.css';
 import "../css/detalles.css";
 
-const API_URL = "http://localhost:5000/api/citas";
+const API_URL = "https://cda-backadmin.onrender.com/api/citas";
 const PASSWORD = "admin123"; 
 
 const Detalles = () => {
