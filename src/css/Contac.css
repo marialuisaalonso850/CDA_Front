@@ -1,16 +1,54 @@
-.btn-send {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .btn-send:hover {
-    background-color: #4caf50;
-  }
-  
-  .header-contact{
-    color: antiquewhite;
-  }
+.detalles-container {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.buscar-cita {
+  margin-bottom: 20px;
+}
+
+.buscar-cita input {
+  padding: 8px;
+  width: 70%;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.buscar-cita button {
+  padding: 8px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.buscar-cita button:hover {
+  background-color: #0056b3;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 15px;
+}
+
+.cita-detalles {
+  margin-top: 20px;
+}
+
+.tabla-detalles {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.tabla-detalles td {
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.tabla-detalles tr:nth-child(even) {
+  background-color: #f9f9f9;
+}

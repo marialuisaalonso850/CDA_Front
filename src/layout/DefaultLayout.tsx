@@ -32,18 +32,7 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
             />
           </Link>
 
-          <Link 
-            to="/login" 
-            style={{ 
-              marginLeft: "20px", 
-              textDecoration: "none", 
-              fontSize: "18px", 
-              fontWeight: "bold", 
-              color: "white" // Letras blancas
-            }}
-          >
-            Login
-          </Link>
+          
           <Link 
             to="/citas" 
             style={{ 
@@ -57,7 +46,7 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
             Agendar Cita
           </Link>
           <Link 
-            to="#" 
+            to="/detalle" 
             style={{ 
               marginLeft: "20px", 
               textDecoration: "none", 

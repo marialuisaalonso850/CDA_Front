@@ -1,0 +1,103 @@
+.detalles-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 20px;
+  }
+  
+  .descripcion {
+    text-align: center;
+    font-size: 16px;
+    max-width: 500px;
+    color: #555;
+    margin-bottom: 20px;
+  }
+  
+  .buscar-cita {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .buscar-cita input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 250px;
+  }
+  
+  .buscar-cita button {
+    padding: 10px 15px;
+    border: none;
+    background-color: green;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .cita-detalles {
+    width: 100%;
+    max-width: 500px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .tabla-detalles {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .tabla-detalles td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .cancelar-cita {
+    width: 100%;
+    padding: 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  /* Fijar el footer abajo */
+  footer {
+    margin-top: auto;
+    width: 100%;
+    background-color: green;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+  }
+  
+  nav {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+  .imagen-container {
+    width: 100vw;  
+    height: 250px; 
+    overflow: hidden;
+    position: relative;
+    margin-top: 0;  
+  }
+  
+  .banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Hace que la imagen se ajuste sin distorsión */
+    display: block; 
+  }
+  
+  
+  
+  

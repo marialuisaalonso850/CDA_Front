@@ -9,6 +9,7 @@ export default function PortalLayout({children}: {children:React.ReactNode}){
       <>
         <header>
           <nav style={{ display: "flex", alignItems: "center", padding: "10px", backgroundColor: "green" }}>
+            
             <Link to="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
               <img
                 src={logo}
@@ -19,8 +20,21 @@ export default function PortalLayout({children}: {children:React.ReactNode}){
                   display: "block"
                 }}
               />
+              <Link 
+                        to="/detalle" 
+                        style={{ 
+                          marginLeft: "20px", 
+                          textDecoration: "none", 
+                          fontSize: "18px", 
+                          fontWeight: "bold", 
+                          color: "white" 
+                        }}
+                      >
+                        Detalle Citas
+                      </Link>
               <span style={{ color: "white", fontSize: "16px", fontWeight: "bold" }}>Salir</span>
             </Link>
+            
           </nav>
         </header>
     
