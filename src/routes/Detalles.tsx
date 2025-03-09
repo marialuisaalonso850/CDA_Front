@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import '../css/Contac.css';
 import "../css/detalles.css";
 
-const API_URL = "http://localhost:5000/api/citas"; 
+const API_URL = "https://cda-back9.onrender.com/api/citas"; 
 
 const Detalles = () => {
   const [codigoCita, setCodigoCita] = useState("");
