@@ -32,19 +32,6 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
             />
           </Link>
 
-          
-          <Link 
-            to="/citas" 
-            style={{ 
-              marginLeft: "20px", 
-              textDecoration: "none", 
-              fontSize: "18px", 
-              fontWeight: "bold", 
-              color: "white" 
-            }}
-          >
-            Agendar Cita
-          </Link>
           <Link 
             to="/detalle" 
             style={{ 
@@ -55,9 +42,9 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
               color: "white" 
             }}
           >
-            Detalle Citas
+            Visualizar Citas
           </Link>
-         
+              
         </nav>
       </header>
       <main>{children}</main>

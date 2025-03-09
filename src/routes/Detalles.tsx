@@ -1,29 +1,54 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DefaultLayout from "../layout/DefaultLayout";
-import Swal from "sweetalert2"; 
+import Swal from "sweetalert2";
 import '../css/Contac.css';
 import "../css/detalles.css";
 
-const API_URL = "https://cda-back9.onrender.com/api/citas"; 
+const API_URL = "http://localhost:5000/api/citas";
+const PASSWORD = "admin123"; 
 
 const Detalles = () => {
   const [codigoCita, setCodigoCita] = useState("");
   const [citaBuscada, setCitaBuscada] = useState<any>(null);
-  const [error, setError] = useState("");
-  const [mensaje, setMensaje] = useState("");
+  const [citas, setCitas] = useState<any[]>([]);
+  const [, setError] = useState("");
+  const [ingresoPermitido, setIngresoPermitido] = useState(false);
+  const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    if (ingresoPermitido) {
+      obtenerCitas();
+    }
+  }, [ingresoPermitido]);
+
+  const verificarPassword = () => {
+    if (password === PASSWORD) {
+      setIngresoPermitido(true);
+    } else {
+      Swal.fire("Error", "Contraseña incorrecta", "error");
+    }
+  };
+
+  const obtenerCitas = async () => {
+    try {
+      const response = await fetch(API_URL);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Error al obtener las citas");
+      setCitas(data);
+    } catch (err: any) {
+      setError(err.message || "Error al obtener citas.");
+    }
+  };
 
   const buscarCita = async () => {
     if (!codigoCita) {
       setError("Por favor ingresa un código de cita.");
       return;
     }
-
     try {
       const response = await fetch(`${API_URL}/${codigoCita}`);
       const data = await response.json();
-
       if (!response.ok) throw new Error(data.error || "Error al buscar la cita");
-
       setCitaBuscada(data);
       setError("");
     } catch (err: any) {
@@ -32,105 +57,145 @@ const Detalles = () => {
     }
   };
 
-  const cancelarCita = async () => {
-    if (!citaBuscada) return;
-
-    // Confirmación con SweetAlert2
-    const resultado = await Swal.fire({
+  const cancelarCita = async (codigo: string) => {
+    const confirmacion = await Swal.fire({
       title: "¿Estás seguro?",
-      text: "Esta acción cancelará tu cita y no podrás recuperarla.",
+      text: "Esta acción no se puede deshacer.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Sí, cancelar",
-      cancelButtonText: "No, mantener",
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, cancelar",
+      cancelButtonText: "No, mantener"
     });
 
-    if (!resultado.isConfirmed) return;
+    if (confirmacion.isConfirmed) {
+      try {
+        const response = await fetch(`${API_URL}/${codigo}`, {
+          method: "DELETE",
+        });
 
-    try {
-      const response = await fetch(`${API_URL}/${citaBuscada.codigoCita}`, {
-        method: "DELETE",
-      });
+        if (!response.ok) {
+          throw new Error("Error al cancelar la cita");
+        }
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Error al cancelar la cita.");
+        setCitas(citas.filter(cita => cita.codigoCita !== codigo));
+        Swal.fire("Cancelado", "La cita ha sido cancelada.", "success");
+      } catch (error) {
+        Swal.fire("Error", "No se pudo cancelar la cita.", "error");
       }
-
-      setMensaje("Cita cancelada con éxito.");
-      setCitaBuscada(null);
-      setCodigoCita("");
-
-      // Mensaje de éxito con SweetAlert2
-      Swal.fire({
-        title: "Cita cancelada",
-        text: "Tu cita ha sido cancelada correctamente.",
-        icon: "success",
-        confirmButtonColor: "#3085d6",
-        confirmButtonText: "Aceptar",
-      });
-
-    } catch (err: any) {
-      setError(err.message || "Error al cancelar la cita.");
     }
   };
 
   return (
-    <DefaultLayout>
-      <div className="detalles-container">
-      <div className="imagen-container">
-    <img 
-      src="https://cdasabaneta.com/wp-content/uploads/2021/06/c952d2bc-5bd3-43ba-b67b-a23399a2.jpg" 
-      alt="Bienvenida" 
-      className="banner-img"
-    />
-  </div>
-        <h1>Consulta tu Cita</h1>
-
-        <p className="descripcion">
-          Ingresa el código de tu cita para ver los detalles. Aquí podrás consultar la información de tu cita y, si lo deseas, cancelarla. 
-        </p>
-
-        <div className="buscar-cita">
-          <input 
-            type="text"
-            placeholder="Ingrese el código de la cita"
-            value={codigoCita}
-            onChange={(e) => setCodigoCita(e.target.value)}
-          />
-          <button onClick={buscarCita}>Buscar</button>
+    <DefaultLayout>    
+      {!ingresoPermitido ? (
+        <div className="password-wrapper">
+          <div className="password-card">
+            <h1>Administrador: Luisa</h1>
+            <img src="../img/logo.webp" alt="Logo" className="login-logo" />
+            <div className="password-container">
+              <h2>Ingrese la contraseña</h2>
+              <input 
+                type="password" 
+                placeholder="Contraseña" 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)}
+                name="password"
+              />
+              <button onClick={verificarPassword}>Ingresar</button>
+            </div>
+          </div>
         </div>
-
-        {error && <p className="error-message">{error}</p>}
-        {mensaje && <p className="success-message">{mensaje}</p>}
-
-        {citaBuscada && (
-          <div className="cita-detalles">
-            <h2>Detalles de la Cita</h2>
-            <table className="tabla-detalles">
+      ) : (
+        <div className="detalles-container">
+          <h1>Consulta y Gestión de Citas</h1>
+          <div className="buscar-cita">
+            <input 
+              type="text"
+              placeholder="Ingrese el código de la cita"
+              value={codigoCita}
+              onChange={(e) => setCodigoCita(e.target.value)}
+            />
+            <button onClick={buscarCita}>Buscar</button>
+          </div>
+          {citaBuscada && (
+            <div className="cita-detalles">
+              <h2>Detalles de la Cita</h2>
+              <p><strong>Nombre:</strong> {citaBuscada.nombre}</p>
+              <p><strong>Correo:</strong> {citaBuscada.correo}</p>
+              <p><strong>Teléfono:</strong> {citaBuscada.telefono}</p>
+              <p><strong>Fecha:</strong> {citaBuscada.fechaCita}</p>
+              <p><strong>Hora:</strong> {citaBuscada.horaCita}</p>
+              <p><strong>Placa:</strong> {citaBuscada.placa}</p>
+              <p><strong>CDA:</strong> {citaBuscada.cdaSeleccionado}</p>
+              <button 
+                onClick={() => cancelarCita(citaBuscada.codigoCita)}
+                style={{
+                  padding: "10px",
+                  backgroundColor: "#d9534f",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                  marginTop: "10px"
+                }}
+              >
+                Cancelar Cita
+              </button>
+            </div>
+          )}
+          <h2>Todas las Citas Registradas</h2>
+          {citas.length > 0 ? (
+            <table>
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Nombre</th>
+                  <th>Correo</th>
+                  <th>Teléfono</th>
+                  <th>Fecha</th>
+                  <th>Hora</th>
+                  <th>Placa</th>
+                  <th>CDA</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
               <tbody>
-                <tr><td><strong>Nombre:</strong></td><td>{citaBuscada.nombre}</td></tr>
-                <tr><td><strong>Correo:</strong></td><td>{citaBuscada.correo}</td></tr>
-                <tr><td><strong>Teléfono:</strong></td><td>{citaBuscada.telefono}</td></tr>
-                <tr><td><strong>Fecha:</strong></td><td>{citaBuscada.fechaCita}</td></tr>
-                <tr><td><strong>Hora:</strong></td><td>{citaBuscada.horaCita}</td></tr>
-                <tr><td><strong>Placa:</strong></td><td>{citaBuscada.placa}</td></tr>
-                <tr><td><strong>CDA:</strong></td><td>{citaBuscada.cdaSeleccionado}</td></tr>
+                {citas.map((cita) => (
+                  <tr key={cita.codigoCita}>
+                    <td>{cita.codigoCita}</td>
+                    <td>{cita.nombre}</td>
+                    <td>{cita.correo}</td>
+                    <td>{cita.telefono}</td>
+                    <td>{cita.fechaCita}</td>
+                    <td>{cita.horaCita}</td>
+                    <td>{cita.placa}</td>
+                    <td>{cita.cdaSeleccionado}</td>
+                    <td>
+                      <button 
+                        onClick={() => cancelarCita(cita.codigoCita)}
+                        style={{
+                          padding: "6px",
+                          backgroundColor: "#d9534f",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "5px",
+                          cursor: "pointer"
+                        }}
+                      >
+                        Cancelar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
-
-            <button className="cancelar-cita" onClick={cancelarCita}>
-              Cancelar Cita
-            </button>
-          </div>
-        )}
-      </div>
-
-      <footer>
-        <p>CDA-Armenia &copy; {new Date().getFullYear()}</p>
-      </footer>
+          ) : (
+            <p>No hay citas registradas.</p>
+          )}
+        </div>
+      )}
     </DefaultLayout>
   );
 };
