@@ -8,6 +8,9 @@ import Home from './routes/Home'
 import AgendarCita from './routes/agendarCita'
 import Login from './routes/Login'
 import Detalles from './routes/Detalles'
+import Tecnomecanica from './routes/Tecnomecanica'
+import Revision from './routes/revision'
+
 
 const router = createBrowserRouter([
   {
@@ -22,9 +25,18 @@ const router = createBrowserRouter([
     path: "/citas",
     element: <AgendarCita/>
   },
+  
   {
     path: "/detalle",
     element: <Detalles/>
+  },
+  {
+    path: "/tecno",
+    element: <Tecnomecanica/>
+  },
+  {
+    path: "/revision/:codigoCita",
+    element: <Revision/>
   },
   {
     path: "/",

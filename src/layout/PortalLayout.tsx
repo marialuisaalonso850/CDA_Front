@@ -20,6 +20,7 @@ export default function PortalLayout({children}: {children:React.ReactNode}){
                   display: "block"
                 }}
               />
+               
               <Link 
                         to="/detalle" 
                         style={{ 
@@ -34,7 +35,7 @@ export default function PortalLayout({children}: {children:React.ReactNode}){
                       </Link>
               <span style={{ color: "white", fontSize: "16px", fontWeight: "bold" }}>Salir</span>
             </Link>
-            
+           
           </nav>
         </header>
     

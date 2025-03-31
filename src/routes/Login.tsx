@@ -37,7 +37,7 @@ export default function Login(){
         if(json.body.accessToken && json.body.refreshToken){
           auth.saveUser(json);
 
-          goto("/citas")
+          goto("/tecno")
 
         }
 
