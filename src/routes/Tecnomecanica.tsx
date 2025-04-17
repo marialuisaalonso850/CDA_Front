@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-
 const API_URL = "http://localhost:3000/api/citas";
 
 interface Cita {
@@ -13,6 +12,7 @@ interface Cita {
   horaCita: string;
   placa: string;
   cdaSeleccionado: string;
+  estado: string; // Add all possible values for estado
 }
 
 export default function Bienvenido() {
@@ -22,16 +22,15 @@ export default function Bienvenido() {
   const [codigoCita, setCodigoCita] = useState("");
   const [citaBuscada, setCitaBuscada] = useState<Cita | null>(null);
 
+  // Obtener todas las citas
   useEffect(() => {
     async function fetchCitas() {
       try {
         const response = await fetch(API_URL);
         if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Error HTTP: ${response.status} - ${errorText}`);
+          throw new Error("Error al obtener citas");
         }
         const data: Cita[] = await response.json();
-        console.log("Citas obtenidas:", data);
         setCitas(data);
       } catch (error) {
         setError("Error al obtener citas. Intente de nuevo más tarde.");
@@ -41,6 +40,7 @@ export default function Bienvenido() {
     fetchCitas();
   }, []);
 
+  // Buscar una cita por código
   const buscarCita = async () => {
     if (!codigoCita.trim()) {
       setError("Por favor ingresa un código de cita.");
@@ -60,6 +60,40 @@ export default function Bienvenido() {
     }
   };
 
+  // Verificar si la cita está vencida
+  const esCitaVencida = (fechaCita: string, horaCita: string): boolean => {
+    const fechaActual = new Date();
+    const fechaHoraCita = new Date(`${fechaCita}T${horaCita}:00`);
+    return fechaActual > fechaHoraCita;
+  };
+
+  // Enviar revisión
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!citaBuscada) return;
+
+    try {
+      const response = await fetch(`${API_URL}/revision`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ codigoCita: citaBuscada.codigoCita }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al guardar la revisión");
+      }
+
+      const updatedCita = await response.json();
+      setCitaBuscada(updatedCita);
+      setError("");
+    } catch (error) {
+      setError("Error al guardar la revisión.");
+      console.error("Error al guardar la revisión:", error);
+    }
+  };
+
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h1>Bienvenido a la Tecnomecánica</h1>
@@ -74,6 +108,7 @@ export default function Bienvenido() {
         />
         <button onClick={buscarCita}>Buscar</button>
       </div>
+
       {citaBuscada && (
         <div>
           <h2>Detalles de la Cita</h2>
@@ -84,10 +119,34 @@ export default function Bienvenido() {
           <p><strong>Hora:</strong> {citaBuscada.horaCita}</p>
           <p><strong>Placa:</strong> {citaBuscada.placa}</p>
           <p><strong>CDA:</strong> {citaBuscada.cdaSeleccionado}</p>
+
+          {/* Acción de realizar tecnomecánica */}
+          {(citaBuscada.estado === "Pendiente" || citaBuscada.estado === "Rechazado") && (
+            <div>
+              <button
+                onClick={handleSubmit}
+                disabled={esCitaVencida(citaBuscada.fechaCita, citaBuscada.horaCita)}
+                style={{
+                  backgroundColor: esCitaVencida(citaBuscada.fechaCita, citaBuscada.horaCita)
+                    ? "gray"
+                    : "blue",
+                  color: "white",
+                  padding: "10px 20px",
+                  cursor: esCitaVencida(citaBuscada.fechaCita, citaBuscada.horaCita) ? "not-allowed" : "pointer",
+                }}
+              >
+                {esCitaVencida(citaBuscada.fechaCita, citaBuscada.horaCita)
+                  ? "Cita Vencida"
+                  : "Realizar Tecnomecánica"}
+              </button>
+            </div>
+          )}
         </div>
       )}
+
+      <h2>Citas Pendientes</h2>
       {citas.length > 0 ? (
-        <table  style={{ margin: "0 auto", width: "80%" }}>
+        <table style={{ margin: "0 auto", width: "80%" }}>
           <thead>
             <tr>
               <th>Código</th>
@@ -102,23 +161,52 @@ export default function Bienvenido() {
             </tr>
           </thead>
           <tbody>
-            {citas.map((cita, index) => (
-              <tr key={index}>
-                <td>{cita.codigoCita}</td>
-                <td>{cita.nombre}</td>
-                <td>{cita.correo}</td>
-                <td>{cita.telefono}</td>
-                <td>{cita.fechaCita}</td>
-                <td>{cita.horaCita}</td>
-                <td>{cita.placa}</td>
-                <td>{cita.cdaSeleccionado}</td>
-                <td>
-                <button onClick={() => navigate(`/revision/${cita.codigoCita}`)}>
-                    Hacer Tecnomecánica
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {citas.map((cita, index) => {
+              let botonColor = "blue";
+              let botonTexto = "Hacer Tecnomecánica";
+
+              // Check for "Tecnomecánica realizada" and separately check for "Aprobada"
+              if (cita.estado === "Tecnomecánica realizada") {
+                botonColor = "green";
+                botonTexto = "Tecnomecánica Realizada";
+              } else if (cita.estado === "Aprobada") {
+                botonColor = "green";
+                botonTexto = "Aprobada";
+              } else if (esCitaVencida(cita.fechaCita, cita.horaCita)) {
+                botonColor = "red";
+                botonTexto = "Cita Vencida";
+              }
+
+              return (
+                <tr key={index}>
+                  <td>{cita.codigoCita}</td>
+                  <td>{cita.nombre}</td>
+                  <td>{cita.correo}</td>
+                  <td>{cita.telefono}</td>
+                  <td>{cita.fechaCita}</td>
+                  <td>{cita.horaCita}</td>
+                  <td>{cita.placa}</td>
+                  <td>{cita.cdaSeleccionado}</td>
+                  <td>
+                    <button
+                      onClick={() => navigate(`/revision/${cita.codigoCita}`)}
+                      style={{
+                        backgroundColor: botonColor,
+                        color: "white",
+                        padding: "10px 20px",
+                        cursor:
+                          cita.estado === "Tecnomecánica realizada" || esCitaVencida(cita.fechaCita, cita.horaCita)
+                            ? "not-allowed"
+                            : "pointer",
+                      }}
+                      disabled={cita.estado === "Tecnomecánica realizada" || esCitaVencida(cita.fechaCita, cita.horaCita)}
+                    >
+                      {botonTexto}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       ) : (
@@ -127,4 +215,3 @@ export default function Bienvenido() {
     </div>
   );
 }
-
