@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import "../css/revision.css";
 
 const API_URL = "http://localhost:3000/api/revisiones";
 const CITA_API_URL = "http://localhost:3000/api/citas";
@@ -321,4 +322,3 @@ export default function Revision() {
     </div>
   );
 }
-
