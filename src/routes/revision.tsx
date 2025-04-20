@@ -51,11 +51,17 @@ export interface Ambiental {
   observacionesAmbiental?: string;
 }
 
-interface Electricidad {
+export interface Electricidad {
   luces: string;
+  observacionesLuces?: string;
+
   direccionales: string;
+  observacionesDireccionales?: string;
+
   claxon: string;
-  observacionesElectricidad: string;
+  observacionesClaxon?: string;
+
+  observacionesElectricidad?: string;
 }
 
 interface RevisionType {
@@ -109,6 +115,8 @@ export default function Revision() {
   });
 
   const [cita, setCita] = useState<CitaType | null>(null);
+
+  const [seccionActiva, setSeccionActiva] = useState("datos");
 
   useEffect(() => {
     if (codigoCita) fetchCita();
@@ -218,13 +226,6 @@ export default function Revision() {
     fontSize: "15px",
   };
 
-  const sectionStyle = {
-    background: "#f9f9f9",
-    padding: "20px",
-    borderRadius: "10px",
-    boxShadow: "0 0 8px rgba(0,0,0,0.06)",
-  };
-
   return (
     <div style={{ textAlign: "center", marginTop: "30px" }}>
       <h1 style={{ marginBottom: "20px" }}>Formulario de Revisión Técnico-Mecánica</h1>
@@ -238,9 +239,17 @@ export default function Revision() {
         </div>
       )}
 
+      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+        <button onClick={() => setSeccionActiva("datos")}>Datos del vehículo</button>
+        <button onClick={() => setSeccionActiva("seguridad")}>Seguridad</button>
+        <button onClick={() => setSeccionActiva("ambiental")}>Ambiental</button>
+        <button onClick={() => setSeccionActiva("electricidad")}>Electricidad</button>
+        <button onClick={() => setSeccionActiva("resumen")}>Resumen</button>
+      </div>
+
       <form onSubmit={handleSubmit} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "30px", width: "90%", maxWidth: "1100px", margin: "0 auto", textAlign: "left" }}>
-        {/* Columna Izquierda */}
-        <div style={sectionStyle}>
+      {seccionActiva === "datos" && (
+          <div>
           <h3>Datos del Vehículo</h3>
           {["placa", "marca", "modelo", "kilometraje"].map((campo) => (
             <div key={campo}>
@@ -255,7 +264,11 @@ export default function Revision() {
               />
             </div>
           ))}
+          </div>
+        )}
 
+      {seccionActiva === "seguridad" && (
+        <div>
         <h3>Seguridad</h3>
 
         {/* Frenos */}
@@ -452,11 +465,11 @@ export default function Revision() {
           onChange={(e) => handleChange(e, "seguridad")}
           style={{ ...inputStyle, height: "60px" }}
         />
-        
         </div>
+      )}
 
-        {/* Columna Derecha */}
-        <div style={sectionStyle}>
+      {seccionActiva === "ambiental" && (
+          <div>
           <h3>Ambiental</h3>
 
           {/* Emisiones de Gases */}
@@ -554,32 +567,95 @@ export default function Revision() {
             style={{ ...inputStyle, height: "60px" }}
           />
 
-          <h3>Electricidad</h3>
-          {["luces", "direccionales", "claxon"].map((campo) => (
-            <div key={campo}>
-              <label>{campo}:</label>
-              <select
-                name={campo}
-                value={revision.electricidad[campo as keyof Electricidad]}
-                onChange={(e) => handleChange(e, "electricidad")}
-                style={inputStyle}
-              >
-                <option value="Funcionando">Funcionando</option>
-                <option value="No funciona">No funciona</option>
-              </select>
-            </div>
-          ))}
-          <label>Observaciones Electricidad:</label>
-          <textarea
-            name="observacionesElectricidad"
-            value={revision.electricidad.observacionesElectricidad}
+          </div>
+        )}
+
+      {seccionActiva === "electricidad" && (
+        <div>
+        <h3>Electricidad</h3>
+
+        {/* Luces */}
+        <div>
+          <label>Luces:</label>
+          <select
+            name="luces"
+            value={revision.electricidad.luces}
             onChange={(e) => handleChange(e, "electricidad")}
-            style={{ ...inputStyle, height: "60px" }}
+            style={inputStyle}
+          >
+            <option value="Funcionando">Funcionando</option>
+            <option value="No Funcionando">No Funcionando</option>
+          </select>
+
+          <label>Observaciones luces:</label>
+          <input
+            type="text"
+            name="observacionesLuces"
+            value={revision.electricidad.observacionesLuces || ""}
+            onChange={(e) => handleChange(e, "electricidad")}
+            style={inputStyle}
           />
         </div>
 
-        {/* Estado Final - Ahora encima del botón */}
-        <div style={sectionStyle}>
+        {/* Direccionales */}
+        <div>
+          <label>Direccionales:</label>
+          <select
+            name="direccionales"
+            value={revision.electricidad.direccionales}
+            onChange={(e) => handleChange(e, "electricidad")}
+            style={inputStyle}
+          >
+            <option value="Funcionando">Funcionando</option>
+            <option value="No Funcionando">No Funcionando</option>
+          </select>
+
+          <label>Observaciones direccionales:</label>
+          <input
+            type="text"
+            name="observacionesDireccionales"
+            value={revision.electricidad.observacionesDireccionales || ""}
+            onChange={(e) => handleChange(e, "electricidad")}
+            style={inputStyle}
+          />
+        </div>
+
+        {/* Claxon */}
+        <div>
+          <label>Claxon:</label>
+          <select
+            name="claxon"
+            value={revision.electricidad.claxon}
+            onChange={(e) => handleChange(e, "electricidad")}
+            style={inputStyle}
+          >
+            <option value="Funcionando">Funcionando</option>
+            <option value="No Funcionando">No Funcionando</option>
+          </select>
+
+          <label>Observaciones claxon:</label>
+          <input
+            type="text"
+            name="observacionesClaxon"
+            value={revision.electricidad.observacionesClaxon || ""}
+            onChange={(e) => handleChange(e, "electricidad")}
+            style={inputStyle}
+          />
+        </div>
+
+        {/* Observaciones generales */}
+        <label>Observaciones generales del sistema eléctrico:</label>
+        <textarea
+          name="observacionesElectricidad"
+          value={revision.electricidad.observacionesElectricidad || ""}
+          onChange={(e) => handleChange(e, "electricidad")}
+          style={{ ...inputStyle, height: "60px" }}
+        />
+      </div>
+      )}
+
+        {seccionActiva === "resumen" && (
+          <div>
           <h3>Estado Final</h3>
           <select
             name="estadoFinal"
@@ -590,13 +666,14 @@ export default function Revision() {
             <option value="Aprobado">Aprobado</option>
             <option value="Rechazado">Rechazado</option>
           </select>
-        </div>
 
         <div>
           <button type="submit" style={buttonStyle} disabled={!isValidForm()}>
             Guardar Revisión
           </button>
         </div>
+        </div>
+        )}
       </form>
     </div>
   );
