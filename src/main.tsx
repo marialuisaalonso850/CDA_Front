@@ -9,7 +9,6 @@ import Login from './routes/Login'
 import Detalles from './routes/Detalles'
 import Tecnomecanica from './routes/Tecnomecanica'
 import Revision from './routes/revision'
-import CrearUsuario from './routes/crearUsuario'
 
 
 const router = createBrowserRouter([
@@ -21,7 +20,11 @@ const router = createBrowserRouter([
     path: "/login",
     element: <Login/>
   },
- 
+  {
+    path: "/citas",
+    element: <AgendarCita/>
+  },
+  
   {
     path: "/detalle",
     element: <Detalles/>
