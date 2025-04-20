@@ -5,7 +5,7 @@ import { API_URL } from "../Autenticacion/constanst";
 import type { AuthResponse, AuthResponseError } from "../types/types";
 import React from "react";
 import DefaultLayout from "../layout/DefaultLayout";
-import "../css/login.css";
+import "../css/Login.css";
 
 export default function Login() {
   const [username, setUsername] = useState("");
