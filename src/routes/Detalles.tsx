@@ -3,9 +3,10 @@ import DefaultLayout from "../layout/DefaultLayout";
 import Swal from "sweetalert2";
 import { jsPDF } from "jspdf";
 import "../css/detalles.css";
+import { API_URL } from "../Autenticacion/constanst";
 
 // API URLs
-const API_URL = "http://localhost:3000/api/citas";
+const API_URL2 = "http://localhost:3000/api/citas";
 const REVISION_API_URL = "http://localhost:3000/api/revisiones";
 const PASSWORD = "admin123";
 
@@ -77,7 +78,7 @@ const Detalles = () => {
 
   const obtenerCitas = async () => {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(API_URL2);
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Error al obtener las citas");
       setCitas(data);
@@ -96,7 +97,7 @@ const Detalles = () => {
     }
 
     try {
-      const response = await fetch(`${API_URL}/${codigoLimpio}`);
+      const response = await fetch(`${API_URL2}/${codigoLimpio}`);
       const data = await response.json();
       
       if (!response.ok) {
@@ -125,13 +126,13 @@ const Detalles = () => {
 
   const generarPDF = () => {
     if (!citaBuscada) return;
-
+    
     const doc = new jsPDF();
     doc.setFontSize(18);
     doc.text("Comprobante Revisión Técnico-Mecánica", 20, 20);
-
+    
     const { nombre, correo, telefono, fechaCita, horaCita, placa, cdaSeleccionado, revision, estado, codigoCita } = citaBuscada;
-
+    
     doc.setFontSize(12);
     doc.text(`Nombre: ${nombre}`, 20, 40);
     doc.text(`Correo: ${correo}`, 20, 50);
@@ -140,7 +141,7 @@ const Detalles = () => {
     doc.text(`Hora: ${horaCita}`, 20, 80);
     doc.text(`Placa: ${placa}`, 20, 90);
     doc.text(`CDA: ${cdaSeleccionado}`, 20, 100);
-
+    
     doc.text("Detalles de la Revisión:", 20, 110);
     if (revision) {
       doc.text(`Luces delanteras: ${revision.electricidad.luces}`, 20, 120);
@@ -149,12 +150,50 @@ const Detalles = () => {
       doc.text(`Neumáticos: ${revision.seguridad.llantasRines}`, 20, 150);
       doc.text(`Estado del motor: ${revision.estadoFinal}`, 20, 160);
     }
-
+    
     doc.text("Estado de la Revisión:", 20, 170);
     doc.text(`${estado || "Sin estado"}`, 20, 180);
-
+    
+    // Save the PDF (optional) and generate base64 string
     doc.save(`${codigoCita}_revision.pdf`);
+    
+    const pdfBase64 = doc.output('datauristring').split(',')[1]; // Extract base64 part
+    
+    // Call the function to send the PDF to the backend
+    enviarPDF(pdfBase64, codigoCita, correo);
   };
+  
+  const enviarPDF = async (pdfBase64: string, codigoCita: string, emailDestinatario: string) => {
+    console.log("Enviando PDF...");
+    console.log("Destinatario:", emailDestinatario);
+    
+    try {
+        const response = await fetch(`${API_URL}/enviar-pdf`, {
+            method: "POST", // Cambié el método a POST
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                pdfBase64,
+                codigoCita
+            }),
+        });
+        
+        console.log("Respuesta del servidor:", response.status);
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            Swal.fire("Éxito", "PDF enviado correctamente", "success");
+        } else {
+            throw new Error(data.error || "Error al enviar el PDF.");
+        }
+    } catch (err) {
+        console.error("Error enviando PDF:", err);
+        // Swal.fire("Error", "No se pudo enviar el PDF: " + err.message, "error");
+    }
+  };
+  
 
   const cancelarCita = async (codigo: string) => {
     const codigoLimpio = codigo.trim();
@@ -172,7 +211,7 @@ const Detalles = () => {
 
     if (confirmacion.isConfirmed) {
       try {
-        const response = await fetch(`${API_URL}/${codigoLimpio}`, { method: "DELETE" });
+        const response = await fetch(`${API_URL2}/${codigoLimpio}`, { method: "DELETE" });
         const data = await response.json();
         
         if (!response.ok) {
@@ -228,7 +267,7 @@ const Detalles = () => {
     };
 
     try {
-      const response = await fetch(`${API_URL}/${codigoLimpio}`, {
+      const response = await fetch(`${API_URL2}/${codigoLimpio}`, {
         method: "PUT",
         body: JSON.stringify(citaParaActualizar),
         headers: { "Content-Type": "application/json" },
@@ -277,22 +316,28 @@ const Detalles = () => {
   return (
     <DefaultLayout ingresoPermitido={ingresoPermitido}>
       {!ingresoPermitido ? (
-        <div className="password-wrapper">
-          <div className="password-card">
-            <h1>Administrador: Luisa</h1>
-            <img src="../img/logo.webp" alt="Logo" className="login-logo" />
-            <div className="password-container">
-              <h2>Ingrese la contraseña</h2>
-              <input
-                type="password"
-                placeholder="Contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <button onClick={verificarPassword}>Ingresar</button>
-            </div>
-          </div>
+  <div className="login-wrapper">
+    <div className="login-container">
+      <div className="left-side">
+        <h1>Administrador: Luisa</h1>
+        <p>Por favor ingrese la contraseña para continuar.</p>
+        <img src="../img/logo.webp" alt="Logo" className="login-logo" />
+      </div>
+      
+      <div className="right-side">
+        <div className="password-card">
+          <h2>Acceso al sistema</h2>
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button onClick={verificarPassword}>Ingresar</button>
         </div>
+      </div>
+    </div>
+  </div>
       ) : (
         <div className="detalles-container">
           <h1>Consulta y Gestión de Citas</h1>

@@ -31,9 +31,7 @@ export const Home = () => {
             transition: 'background 0.3s',
             width:'200px',
             margin: '50px'
-          }}
-          
-         
+          }}                   
         >
           Listar citas
         </button>

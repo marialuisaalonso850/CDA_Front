@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../css/revision.css";
+import PortalLayout from "../layout/Portal"; 
 
 const API_URL = "http://localhost:3000/api/revisiones";
 const CITA_API_URL = "http://localhost:3000/api/citas";
@@ -36,7 +37,7 @@ interface RevisionType {
   ambiental: Ambiental;
   electricidad: Electricidad;
   observaciones: string;
-  estadoFinal: string; // Campo agregado
+  estadoFinal: string;
 }
 
 interface CitaType {
@@ -74,7 +75,7 @@ export default function Revision() {
       observacionesElectricidad: "",
     },
     observaciones: "",
-    estadoFinal: "Aprobado", // Inicializando el estado final
+    estadoFinal: "Aprobado",
   });
 
   const [cita, setCita] = useState<CitaType | null>(null);
@@ -114,7 +115,12 @@ export default function Revision() {
   };
 
   const isValidForm = () => {
-    return revision.seguridad.frenos && revision.seguridad.suspension && revision.ambiental.emisiones && revision.electricidad.luces;
+    return (
+      revision.seguridad.frenos &&
+      revision.seguridad.suspension &&
+      revision.ambiental.emisiones &&
+      revision.electricidad.luces
+    );
   };
 
   const handleChange = (
@@ -122,20 +128,25 @@ export default function Revision() {
     section?: keyof RevisionType
   ) => {
     const { name, value } = e.target;
+  
     setRevision((prev) => {
-      if (section && typeof prev[section] === "object") {
+      // Verifica si 'section' es un valor válido y 'prev[section]' es un objeto
+      if (section && typeof prev[section] === "object" && prev[section] !== null) {
         return {
           ...prev,
           [section]: {
-            ...prev[section],
+            // Spread solo si prev[section] es un objeto
+            ...(prev[section] as Record<string, any>), // Aseguramos que prev[section] es un objeto
             [name]: value,
           },
         };
       }
+  
+      // Si no es un objeto, se hace el spread directamente sobre el valor de 'prev'
       return { ...prev, [name]: value };
     });
   };
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -145,6 +156,7 @@ export default function Revision() {
     }
 
     const dataToSend = { codigoCita, ...revision };
+
     try {
       const response = await fetch(API_URL, {
         method: "POST",
@@ -162,44 +174,19 @@ export default function Revision() {
 
       alert("Revisión guardada y cita actualizada");
       navigate("/");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error en handleSubmit:", error);
       alert(`Error: ${error.message}`);
     }
   };
 
-  const buttonStyle = {
-    padding: "10px 20px",
-    fontSize: "16px",
-    borderRadius: "6px",
-    backgroundColor: cita?.estado === "Pendiente" || cita?.estado === "Rechazado" ? "#2196F3" : "#4CAF50",
-    color: "white",
-    border: "none",
-  };
-
-  const inputStyle = {
-    width: "100%",
-    padding: "10px",
-    marginTop: "6px",
-    marginBottom: "16px",
-    borderRadius: "6px",
-    border: "1px solid #ccc",
-    fontSize: "15px",
-  };
-
-  const sectionStyle = {
-    background: "#f9f9f9",
-    padding: "20px",
-    borderRadius: "10px",
-    boxShadow: "0 0 8px rgba(0,0,0,0.06)",
-  };
-
   return (
-    <div style={{ textAlign: "center", marginTop: "30px" }}>
-      <h1 style={{ marginBottom: "20px" }}>Formulario de Revisión Técnico-Mecánica</h1>
+    <PortalLayout>
+    <div className="revision-container">
+      <h1 className="revision-title">Formulario de Revisión Técnico-Mecánica</h1>
 
       {cita && (
-        <div style={{ marginBottom: "20px" }}>
+        <div className="cita-detalles">
           <h3>Detalles de la Cita</h3>
           <p><strong>Placa:</strong> {cita.placa}</p>
           <p><strong>Fecha de Cita:</strong> {cita.fechaCita}</p>
@@ -207,9 +194,8 @@ export default function Revision() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "30px", width: "90%", maxWidth: "1100px", margin: "0 auto", textAlign: "left" }}>
-        {/* Columna Izquierda */}
-        <div style={sectionStyle}>
+      <form onSubmit={handleSubmit} className="revision-form">
+        <div className="section">
           <h3>Datos del Vehículo</h3>
           {["placa", "marca", "modelo", "kilometraje"].map((campo) => (
             <div key={campo}>
@@ -220,7 +206,6 @@ export default function Revision() {
                 value={(revision as any)[campo]}
                 onChange={handleChange}
                 required
-                style={inputStyle}
               />
             </div>
           ))}
@@ -233,7 +218,6 @@ export default function Revision() {
                 name={campo}
                 value={revision.seguridad[campo as keyof Seguridad]}
                 onChange={(e) => handleChange(e, "seguridad")}
-                style={inputStyle}
               >
                 <option value="Aprobado">Aprobado</option>
                 <option value="Reprobado">Reprobado</option>
@@ -245,12 +229,10 @@ export default function Revision() {
             name="observacionesSeguridad"
             value={revision.seguridad.observacionesSeguridad}
             onChange={(e) => handleChange(e, "seguridad")}
-            style={{ ...inputStyle, height: "60px" }}
           />
         </div>
 
-        {/* Columna Derecha */}
-        <div style={sectionStyle}>
+        <div className="section">
           <h3>Ambiental</h3>
           {["emisiones", "escape"].map((campo) => (
             <div key={campo}>
@@ -259,7 +241,6 @@ export default function Revision() {
                 name={campo}
                 value={revision.ambiental[campo as keyof Ambiental]}
                 onChange={(e) => handleChange(e, "ambiental")}
-                style={inputStyle}
               >
                 <option value="Aprobado">Aprobado</option>
                 <option value="Reprobado">Reprobado</option>
@@ -272,7 +253,6 @@ export default function Revision() {
             name="observacionesAmbiental"
             value={revision.ambiental.observacionesAmbiental}
             onChange={(e) => handleChange(e, "ambiental")}
-            style={{ ...inputStyle, height: "60px" }}
           />
 
           <h3>Electricidad</h3>
@@ -283,7 +263,6 @@ export default function Revision() {
                 name={campo}
                 value={revision.electricidad[campo as keyof Electricidad]}
                 onChange={(e) => handleChange(e, "electricidad")}
-                style={inputStyle}
               >
                 <option value="Funcionando">Funcionando</option>
                 <option value="No funciona">No funciona</option>
@@ -295,30 +274,26 @@ export default function Revision() {
             name="observacionesElectricidad"
             value={revision.electricidad.observacionesElectricidad}
             onChange={(e) => handleChange(e, "electricidad")}
-            style={{ ...inputStyle, height: "60px" }}
           />
         </div>
 
-        {/* Estado Final - Ahora encima del botón */}
-        <div style={sectionStyle}>
+        <div className="section">
           <h3>Estado Final</h3>
           <select
             name="estadoFinal"
             value={revision.estadoFinal}
             onChange={handleChange}
-            style={inputStyle}
           >
             <option value="Aprobado">Aprobado</option>
             <option value="Rechazado">Rechazado</option>
           </select>
-        </div>
 
-        <div>
-          <button type="submit" style={buttonStyle} disabled={!isValidForm()}>
+          <button type="submit" className="btn-guardar" disabled={!isValidForm()}>
             Guardar Revisión
           </button>
         </div>
       </form>
     </div>
+    </PortalLayout>
   );
 }

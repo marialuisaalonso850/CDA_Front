@@ -13,7 +13,6 @@ export default function CrearUsuario() {
   const [usuarios, setUsuarios] = useState<any[]>([]);
   
   
-
   useEffect(() => {
     obtenerUsuarios();
   }, []);

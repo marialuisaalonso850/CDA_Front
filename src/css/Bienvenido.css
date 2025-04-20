@@ -1,0 +1,104 @@
+.container {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  h1, h2 {
+    color: #0a0;
+  }
+  
+  .error {
+    color: red;
+  }
+  
+  .buscar-cita {
+    margin: 20px 0;
+  }
+  
+  .buscar-cita input {
+    padding: 8px;
+    width: 220px;
+    margin-right: 10px;
+  }
+  
+  .buscar-cita button {
+    padding: 8px 16px;
+    background: #0a0;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .tabla-responsive {
+    overflow-x: auto;
+    margin-top: 20px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+  }
+  
+  table th, table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+  }
+  
+  table th {
+    background: #0a0;
+    color: white;
+  }
+  
+  button {
+    padding: 8px 14px;
+    border: none;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .boton-realizar {
+    background: #007bff;
+  }
+  
+  .boton-realizada, .boton-aprobada {
+    background: #28a745;
+  }
+  
+  .boton-vencido {
+    background: #dc3545;
+    cursor: not-allowed;
+  }
+  
+  .detalle-cita {
+    margin: 20px 0;
+  }
+  
+  .detalle-cita table {
+    margin: 0 auto;
+    width: auto;
+  }
+  
+  .detalle-cita td {
+    padding: 6px 12px;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .buscar-cita input {
+      width: 70%;
+      margin-bottom: 10px;
+    }
+  
+    .buscar-cita button {
+      width: 70%;
+    }
+  
+    table th, table td {
+      font-size: 14px;
+    }
+  
+    .detalle-cita table {
+      width: 100%;
+    }
+  }
+  

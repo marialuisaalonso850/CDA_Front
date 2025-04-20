@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DefaultLayout from "../layout/Portal2"; 
+import "../css/Bienvenido.css"
+
 
 const API_URL = "http://localhost:3000/api/citas";
 
@@ -12,7 +15,7 @@ interface Cita {
   horaCita: string;
   placa: string;
   cdaSeleccionado: string;
-  estado: string; // Add all possible values for estado
+  estado: string;
 }
 
 export default function Bienvenido() {
@@ -22,7 +25,6 @@ export default function Bienvenido() {
   const [codigoCita, setCodigoCita] = useState("");
   const [citaBuscada, setCitaBuscada] = useState<Cita | null>(null);
 
-  // Obtener todas las citas
   useEffect(() => {
     async function fetchCitas() {
       try {
@@ -34,13 +36,11 @@ export default function Bienvenido() {
         setCitas(data);
       } catch (error) {
         setError("Error al obtener citas. Intente de nuevo más tarde.");
-        console.error("Error al obtener citas:", error);
       }
     }
     fetchCitas();
   }, []);
 
-  // Buscar una cita por código
   const buscarCita = async () => {
     if (!codigoCita.trim()) {
       setError("Por favor ingresa un código de cita.");
@@ -48,26 +48,23 @@ export default function Bienvenido() {
     }
     try {
       const response = await fetch(`${API_URL}/${codigoCita}`);
-      if (!response.ok) {
-        throw new Error("Cita no encontrada");
-      }
+      if (!response.ok) throw new Error("Cita no encontrada");
+
       const data: Cita = await response.json();
       setCitaBuscada(data);
       setError("");
-    } catch (err) {
+    } catch {
       setCitaBuscada(null);
       setError("Cita no encontrada.");
     }
   };
 
-  // Verificar si la cita está vencida
   const esCitaVencida = (fechaCita: string, horaCita: string): boolean => {
     const fechaActual = new Date();
     const fechaHoraCita = new Date(`${fechaCita}T${horaCita}:00`);
     return fechaActual > fechaHoraCita;
   };
 
-  // Enviar revisión
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!citaBuscada) return;
@@ -75,143 +72,127 @@ export default function Bienvenido() {
     try {
       const response = await fetch(`${API_URL}/revision`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ codigoCita: citaBuscada.codigoCita }),
       });
 
-      if (!response.ok) {
-        throw new Error("Error al guardar la revisión");
-      }
+      if (!response.ok) throw new Error("Error al guardar la revisión");
 
       const updatedCita = await response.json();
       setCitaBuscada(updatedCita);
       setError("");
-    } catch (error) {
+    } catch {
       setError("Error al guardar la revisión.");
-      console.error("Error al guardar la revisión:", error);
     }
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h1>Bienvenido a la Tecnomecánica</h1>
-      <h2>Lista de Citas</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <div>
-        <input
-          type="text"
-          placeholder="Ingrese el código de la cita"
-          value={codigoCita}
-          onChange={(e) => setCodigoCita(e.target.value)}
-        />
-        <button onClick={buscarCita}>Buscar</button>
-      </div>
+    <DefaultLayout>
+      <div className="container">
+        <h1>Bienvenido a la Tecnomecánica</h1>
+        <h2>Buscar Cita</h2>
+        {error && <p className="error">{error}</p>}
+        <div className="buscar-cita">
+          <input
+            type="text"
+            placeholder="Ingrese código de cita"
+            value={codigoCita}
+            onChange={(e) => setCodigoCita(e.target.value)}
+          />
+          <button onClick={buscarCita}>Buscar</button>
+        </div>
 
-      {citaBuscada && (
-        <div>
-          <h2>Detalles de la Cita</h2>
-          <p><strong>Nombre:</strong> {citaBuscada.nombre}</p>
-          <p><strong>Correo:</strong> {citaBuscada.correo}</p>
-          <p><strong>Teléfono:</strong> {citaBuscada.telefono}</p>
-          <p><strong>Fecha:</strong> {citaBuscada.fechaCita}</p>
-          <p><strong>Hora:</strong> {citaBuscada.horaCita}</p>
-          <p><strong>Placa:</strong> {citaBuscada.placa}</p>
-          <p><strong>CDA:</strong> {citaBuscada.cdaSeleccionado}</p>
+        {citaBuscada && (
+          <div className="detalle-cita">
+            <h2>Detalles de la Cita</h2>
+            <table>
+              <tbody>
+                <tr><td>Nombre:</td><td>{citaBuscada.nombre}</td></tr>
+                <tr><td>Correo:</td><td>{citaBuscada.correo}</td></tr>
+                <tr><td>Teléfono:</td><td>{citaBuscada.telefono}</td></tr>
+                <tr><td>Fecha:</td><td>{citaBuscada.fechaCita}</td></tr>
+                <tr><td>Hora:</td><td>{citaBuscada.horaCita}</td></tr>
+                <tr><td>Placa:</td><td>{citaBuscada.placa}</td></tr>
+                <tr><td>CDA:</td><td>{citaBuscada.cdaSeleccionado}</td></tr>
+              </tbody>
+            </table>
 
-          {/* Acción de realizar tecnomecánica */}
-          {(citaBuscada.estado === "Pendiente" || citaBuscada.estado === "Rechazado") && (
-            <div>
+            {(citaBuscada.estado === "Pendiente" || citaBuscada.estado === "Rechazado") && (
               <button
                 onClick={handleSubmit}
                 disabled={esCitaVencida(citaBuscada.fechaCita, citaBuscada.horaCita)}
-                style={{
-                  backgroundColor: esCitaVencida(citaBuscada.fechaCita, citaBuscada.horaCita)
-                    ? "gray"
-                    : "blue",
-                  color: "white",
-                  padding: "10px 20px",
-                  cursor: esCitaVencida(citaBuscada.fechaCita, citaBuscada.horaCita) ? "not-allowed" : "pointer",
-                }}
+                className={esCitaVencida(citaBuscada.fechaCita, citaBuscada.horaCita) ? "boton-vencido" : "boton-realizar"}
               >
                 {esCitaVencida(citaBuscada.fechaCita, citaBuscada.horaCita)
                   ? "Cita Vencida"
                   : "Realizar Tecnomecánica"}
               </button>
-            </div>
-          )}
-        </div>
-      )}
+            )}
+          </div>
+        )}
 
-      <h2>Citas Pendientes</h2>
-      {citas.length > 0 ? (
-        <table style={{ margin: "0 auto", width: "80%" }}>
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Nombre</th>
-              <th>Correo</th>
-              <th>Teléfono</th>
-              <th>Fecha</th>
-              <th>Hora</th>
-              <th>Placa</th>
-              <th>CDA</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {citas.map((cita, index) => {
-              let botonColor = "blue";
-              let botonTexto = "Hacer Tecnomecánica";
-
-              // Check for "Tecnomecánica realizada" and separately check for "Aprobada"
-              if (cita.estado === "Tecnomecánica realizada") {
-                botonColor = "green";
-                botonTexto = "Tecnomecánica Realizada";
-              } else if (cita.estado === "Aprobada") {
-                botonColor = "green";
-                botonTexto = "Aprobada";
-              } else if (esCitaVencida(cita.fechaCita, cita.horaCita)) {
-                botonColor = "red";
-                botonTexto = "Cita Vencida";
-              }
-
-              return (
-                <tr key={index}>
-                  <td>{cita.codigoCita}</td>
-                  <td>{cita.nombre}</td>
-                  <td>{cita.correo}</td>
-                  <td>{cita.telefono}</td>
-                  <td>{cita.fechaCita}</td>
-                  <td>{cita.horaCita}</td>
-                  <td>{cita.placa}</td>
-                  <td>{cita.cdaSeleccionado}</td>
-                  <td>
-                    <button
-                      onClick={() => navigate(`/revision/${cita.codigoCita}`)}
-                      style={{
-                        backgroundColor: botonColor,
-                        color: "white",
-                        padding: "10px 20px",
-                        cursor:
-                          cita.estado === "Tecnomecánica realizada" || esCitaVencida(cita.fechaCita, cita.horaCita)
-                            ? "not-allowed"
-                            : "pointer",
-                      }}
-                      disabled={cita.estado === "Tecnomecánica realizada" || esCitaVencida(cita.fechaCita, cita.horaCita)}
-                    >
-                      {botonTexto}
-                    </button>
-                  </td>
+        <h2>Citas Pendientes</h2>
+        {citas.length > 0 ? (
+          <div className="tabla-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Nombre</th>
+                  <th>Correo</th>
+                  <th>Teléfono</th>
+                  <th>Fecha</th>
+                  <th>Hora</th>
+                  <th>Placa</th>
+                  <th>CDA</th>
+                  <th>Acción</th>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      ) : (
-        <p>No hay citas registradas.</p>
-      )}
-    </div>
+              </thead>
+              <tbody>
+                {citas.map((cita, index) => {
+                  let botonColor = "boton-realizar";
+                  let botonTexto = "Hacer Tecnomecánica";
+
+                  if (cita.estado === "Tecnomecánica realizada") {
+                    botonColor = "boton-realizada";
+                    botonTexto = "Tecnomecánica Realizada";
+                  } else if (cita.estado === "Aprobada") {
+                    botonColor = "boton-aprobada";
+                    botonTexto = "Aprobada";
+                  } else if (esCitaVencida(cita.fechaCita, cita.horaCita)) {
+                    botonColor = "boton-vencido";
+                    botonTexto = "Cita Vencida";
+                  }
+
+                  return (
+                    <tr key={index}>
+                      <td>{cita.codigoCita}</td>
+                      <td>{cita.nombre}</td>
+                      <td>{cita.correo}</td>
+                      <td>{cita.telefono}</td>
+                      <td>{cita.fechaCita}</td>
+                      <td>{cita.horaCita}</td>
+                      <td>{cita.placa}</td>
+                      <td>{cita.cdaSeleccionado}</td>
+                      <td>
+                        <button
+                          onClick={() => navigate(`/revision/${cita.codigoCita}`)}
+                          className={botonColor}
+                          disabled={cita.estado === "Tecnomecánica realizada" || esCitaVencida(cita.fechaCita, cita.horaCita)}
+                        >
+                          {botonTexto}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p>No hay citas registradas.</p>
+        )}
+      </div>
+    </DefaultLayout>
   );
 }

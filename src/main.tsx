@@ -5,11 +5,11 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import ProtectedRoute from './routes/protectedRaute'
 import { AuthProvider } from './Autenticacion/AutProvider'
 import Home from './routes/Home'
-import AgendarCita from './routes/agendarCita'
 import Login from './routes/Login'
 import Detalles from './routes/Detalles'
 import Tecnomecanica from './routes/Tecnomecanica'
 import Revision from './routes/revision'
+import CrearUsuario from './routes/crearUsuario'
 
 
 const router = createBrowserRouter([
@@ -21,11 +21,7 @@ const router = createBrowserRouter([
     path: "/login",
     element: <Login/>
   },
-  {
-    path: "/citas",
-    element: <AgendarCita/>
-  },
-  
+ 
   {
     path: "/detalle",
     element: <Detalles/>
@@ -33,6 +29,10 @@ const router = createBrowserRouter([
   {
     path: "/tecno",
     element: <Tecnomecanica/>
+  },
+  {
+    path: "/crearUsuario",
+    element: <CrearUsuario/>
   },
   {
     path: "/revision/:codigoCita",
