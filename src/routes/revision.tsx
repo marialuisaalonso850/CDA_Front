@@ -6,18 +6,49 @@ const API_URL = "http://localhost:3000/api/revisiones";
 const CITA_API_URL = "http://localhost:3000/api/citas";
 const VEHICULO_API_URL = "http://localhost:3000/api/placas";
 
-interface Seguridad {
+export interface Seguridad {
+  // Frenos
   frenos: string;
-  suspension: string;
+  fuerzaFrenadoDelantera?: number;
+  fuerzaFrenadoTrasera?: number;
+  desbalanceFrenado?: number;
+  observacionesFrenos?: string;
+
+  // Dirección
   direccion: string;
+  holguraVolante?: number;
+  estadoRotulas?: string;
+  observacionesDireccion?: string;
+
+  // Suspensión
+  suspension: string;
+  reboteIzquierdo?: number;
+  reboteDerecho?: number;
+  estadoBujes?: string;
+  observacionesSuspension?: string;
+
+  // Llantas y Rines
   llantasRines: string;
-  observacionesSeguridad: string;
+  labradoLlantas?: number;
+  estadoRines?: string;
+  observacionesLlantasRines?: string;
+
+  // Observación general
+  observacionesSeguridad?: string;
 }
 
-interface Ambiental {
+export interface Ambiental {
   emisiones: string;
+  co?: number;
+  co2?: number;
+  hc?: number;
+  opacidad?: number;
+  observacionesEmisiones?: string;
+
   escape: string;
-  observacionesAmbiental: string;
+  observacionesEscape?: string;
+
+  observacionesAmbiental?: string;
 }
 
 interface Electricidad {
@@ -225,52 +256,300 @@ export default function Revision() {
             </div>
           ))}
 
-          <h3>Seguridad</h3>
-          {["frenos", "suspension", "direccion", "llantasRines"].map((campo) => (
-            <div key={campo}>
-              <label>{campo}:</label>
-              <select
-                name={campo}
-                value={revision.seguridad[campo as keyof Seguridad]}
-                onChange={(e) => handleChange(e, "seguridad")}
-                style={inputStyle}
-              >
-                <option value="Aprobado">Aprobado</option>
-                <option value="Reprobado">Reprobado</option>
-              </select>
-            </div>
-          ))}
-          <label>Observaciones Seguridad:</label>
-          <textarea
-            name="observacionesSeguridad"
-            value={revision.seguridad.observacionesSeguridad}
+        <h3>Seguridad</h3>
+
+        {/* Frenos */}
+        <div>
+          <label>Frenos:</label>
+          <select
+            name="frenos"
+            value={revision.seguridad.frenos}
             onChange={(e) => handleChange(e, "seguridad")}
-            style={{ ...inputStyle, height: "60px" }}
+            style={inputStyle}
+          >
+            <option value="Aprobado">Aprobado</option>
+            <option value="Reprobado">Reprobado</option>
+          </select>
+
+          <label>Fuerza de frenado delantera (N):</label>
+          <input
+            type="number"
+            name="fuerzaFrenadoDelantera"
+            value={revision.seguridad.fuerzaFrenadoDelantera || ""}
+            onChange={(e) => handleChange(e, "seguridad")}
+            style={inputStyle}
           />
+
+          <label>Fuerza de frenado trasera (N):</label>
+          <input
+            type="number"
+            name="fuerzaFrenadoTrasera"
+            value={revision.seguridad.fuerzaFrenadoTrasera || ""}
+            onChange={(e) => handleChange(e, "seguridad")}
+            style={inputStyle}
+          />
+
+          <label>Desbalance de frenado (%):</label>
+          <input
+            type="number"
+            name="desbalanceFrenado"
+            step="0.1"
+            value={revision.seguridad.desbalanceFrenado || ""}
+            onChange={(e) => handleChange(e, "seguridad")}
+            style={inputStyle}
+          />
+
+          <label>Observaciones frenos:</label>
+          <input
+            type="text"
+            name="observacionesFrenos"
+            value={revision.seguridad.observacionesFrenos || ""}
+            onChange={(e) => handleChange(e, "seguridad")}
+            style={inputStyle}
+          />
+        </div>
+
+        {/* Dirección */}
+        <div>
+          <label>Dirección:</label>
+          <select
+            name="direccion"
+            value={revision.seguridad.direccion}
+            onChange={(e) => handleChange(e, "seguridad")}
+            style={inputStyle}
+          >
+            <option value="Aprobado">Aprobado</option>
+            <option value="Reprobado">Reprobado</option>
+          </select>
+
+          <label>Holgura del volante (° o cm):</label>
+          <input
+            type="number"
+            step="0.1"
+            name="holguraVolante"
+            value={revision.seguridad.holguraVolante || ""}
+            onChange={(e) => handleChange(e, "seguridad")}
+            style={inputStyle}
+          />
+
+          <label>Estado rótulas/terminales:</label>
+          <input
+            type="text"
+            name="estadoRotulas"
+            placeholder="Ej: sin juego / con desgaste"
+            value={revision.seguridad.estadoRotulas || ""}
+            onChange={(e) => handleChange(e, "seguridad")}
+            style={inputStyle}
+          />
+
+          <label>Observaciones dirección:</label>
+          <input
+            type="text"
+            name="observacionesDireccion"
+            value={revision.seguridad.observacionesDireccion || ""}
+            onChange={(e) => handleChange(e, "seguridad")}
+            style={inputStyle}
+          />
+        </div>
+
+        {/* Suspensión */}
+        <div>
+          <label>Suspensión:</label>
+          <select
+            name="suspension"
+            value={revision.seguridad.suspension}
+            onChange={(e) => handleChange(e, "seguridad")}
+            style={inputStyle}
+          >
+            <option value="Aprobado">Aprobado</option>
+            <option value="Reprobado">Reprobado</option>
+          </select>
+
+          <label>Rebote izquierdo (N° rebotes):</label>
+          <input
+            type="number"
+            name="reboteIzquierdo"
+            value={revision.seguridad.reboteIzquierdo || ""}
+            onChange={(e) => handleChange(e, "seguridad")}
+            style={inputStyle}
+          />
+
+          <label>Rebote derecho (N° rebotes):</label>
+          <input
+            type="number"
+            name="reboteDerecho"
+            value={revision.seguridad.reboteDerecho || ""}
+            onChange={(e) => handleChange(e, "seguridad")}
+            style={inputStyle}
+          />
+
+          <label>Estado bujes/anclajes:</label>
+          <input
+            type="text"
+            name="estadoBujes"
+            value={revision.seguridad.estadoBujes || ""}
+            onChange={(e) => handleChange(e, "seguridad")}
+            style={inputStyle}
+          />
+
+          <label>Observaciones suspensión:</label>
+          <input
+            type="text"
+            name="observacionesSuspension"
+            value={revision.seguridad.observacionesSuspension || ""}
+            onChange={(e) => handleChange(e, "seguridad")}
+            style={inputStyle}
+          />
+        </div>
+
+        {/* Llantas y Rines */}
+        <div>
+          <label>Llantas y Rines:</label>
+          <select
+            name="llantasRines"
+            value={revision.seguridad.llantasRines}
+            onChange={(e) => handleChange(e, "seguridad")}
+            style={inputStyle}
+          >
+            <option value="Aprobado">Aprobado</option>
+            <option value="Reprobado">Reprobado</option>
+          </select>
+
+          <label>Profundidad del labrado (mm):</label>
+          <input
+            type="number"
+            step="0.1"
+            name="labradoLlantas"
+            value={revision.seguridad.labradoLlantas || ""}
+            onChange={(e) => handleChange(e, "seguridad")}
+            style={inputStyle}
+          />
+
+          <label>Estado de los rines:</label>
+          <input
+            type="text"
+            name="estadoRines"
+            value={revision.seguridad.estadoRines || ""}
+            onChange={(e) => handleChange(e, "seguridad")}
+            style={inputStyle}
+          />
+
+          <label>Observaciones llantas/rines:</label>
+          <input
+            type="text"
+            name="observacionesLlantasRines"
+            value={revision.seguridad.observacionesLlantasRines || ""}
+            onChange={(e) => handleChange(e, "seguridad")}
+            style={inputStyle}
+          />
+        </div>
+
+        {/* Observación general del módulo */}
+        <label>Observaciones generales de seguridad:</label>
+        <textarea
+          name="observacionesSeguridad"
+          value={revision.seguridad.observacionesSeguridad}
+          onChange={(e) => handleChange(e, "seguridad")}
+          style={{ ...inputStyle, height: "60px" }}
+        />
+        
         </div>
 
         {/* Columna Derecha */}
         <div style={sectionStyle}>
           <h3>Ambiental</h3>
-          {["emisiones", "escape"].map((campo) => (
-            <div key={campo}>
-              <label>{campo}:</label>
-              <select
-                name={campo}
-                value={revision.ambiental[campo as keyof Ambiental]}
-                onChange={(e) => handleChange(e, "ambiental")}
-                style={inputStyle}
-              >
-                <option value="Aprobado">Aprobado</option>
-                <option value="Reprobado">Reprobado</option>
-                <option value="Dentro del límite">Dentro del límite</option>
-              </select>
-            </div>
-          ))}
-          <label>Observaciones Ambiental:</label>
+
+          {/* Emisiones de Gases */}
+          <div>
+            <label>Emisiones:</label>
+            <select
+              name="emisiones"
+              value={revision.ambiental.emisiones}
+              onChange={(e) => handleChange(e, "ambiental")}
+              style={inputStyle}
+            >
+              <option value="Dentro del límite">Dentro del límite</option>
+              <option value="Fuera del límite">Fuera del límite</option>
+            </select>
+
+            <label>CO (%):</label>
+            <input
+              type="number"
+              step="0.01"
+              name="co"
+              value={revision.ambiental.co || ""}
+              onChange={(e) => handleChange(e, "ambiental")}
+              style={inputStyle}
+            />
+
+            <label>CO₂ (%):</label>
+            <input
+              type="number"
+              step="0.01"
+              name="co2"
+              value={revision.ambiental.co2 || ""}
+              onChange={(e) => handleChange(e, "ambiental")}
+              style={inputStyle}
+            />
+
+            <label>HC (ppm):</label>
+            <input
+              type="number"
+              step="1"
+              name="hc"
+              value={revision.ambiental.hc || ""}
+              onChange={(e) => handleChange(e, "ambiental")}
+              style={inputStyle}
+            />
+
+            <label>Opacidad (diesel):</label>
+            <input
+              type="number"
+              step="0.1"
+              name="opacidad"
+              value={revision.ambiental.opacidad || ""}
+              onChange={(e) => handleChange(e, "ambiental")}
+              style={inputStyle}
+            />
+
+            <label>Observaciones emisiones:</label>
+            <input
+              type="text"
+              name="observacionesEmisiones"
+              value={revision.ambiental.observacionesEmisiones || ""}
+              onChange={(e) => handleChange(e, "ambiental")}
+              style={inputStyle}
+            />
+          </div>
+
+          {/* Sistema de escape */}
+          <div>
+            <label>Sistema de escape:</label>
+            <select
+              name="escape"
+              value={revision.ambiental.escape}
+              onChange={(e) => handleChange(e, "ambiental")}
+              style={inputStyle}
+            >
+              <option value="Aprobado">Aprobado</option>
+              <option value="Reprobado">Reprobado</option>
+            </select>
+
+            <label>Observaciones escape:</label>
+            <input
+              type="text"
+              name="observacionesEscape"
+              value={revision.ambiental.observacionesEscape || ""}
+              onChange={(e) => handleChange(e, "ambiental")}
+              style={inputStyle}
+            />
+          </div>
+
+          {/* Observaciones generales del módulo */}
+          <label>Observaciones ambientales generales:</label>
           <textarea
             name="observacionesAmbiental"
-            value={revision.ambiental.observacionesAmbiental}
+            value={revision.ambiental.observacionesAmbiental || ""}
             onChange={(e) => handleChange(e, "ambiental")}
             style={{ ...inputStyle, height: "60px" }}
           />
