@@ -128,10 +128,7 @@ const Detalles = () => {
   
     const doc = new jsPDF();
   
-    // Logo
-    const logo = new Image();
-    logo.src = "../public/img/logo.webp"; // Cambia la ruta al logo
-    doc.addImage(logo, 'WEBP', 10, 10, 40, 20); // Logo alineado a la izquierda
+    
   
     // Título (Centrado y con mayor espacio)
     const title = "Comprobante de Revisión Técnico-Mecánica";
