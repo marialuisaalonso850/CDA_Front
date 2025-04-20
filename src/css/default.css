@@ -1,0 +1,81 @@
+/* --- HEADER GENERAL --- */
+.header {
+  background-color: green;
+  padding: 10px 20px;
+}
+
+/* --- NAVEGACIÓN --- */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+/* --- LOGO --- */
+.logo img {
+  height: 50px;
+  width: auto;
+}
+
+/* --- BOTÓN MENÚ MÓVIL --- */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+/* --- ENLACES --- */
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+/* --- RESPONSIVE MÓVIL --- */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background-color: green;
+    margin-top: 10px;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links a {
+    padding: 14px 20px;
+    color: white;
+    border-top: 1px solid #ffffff55;
+  }
+
+  .nav-links a:hover {
+    background-color: white;
+    color: green;
+  }
+}
+
+/* --- CONTENIDO --- */
+.content {
+  padding: 20px;
+}

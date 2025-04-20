@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../css/Bienvenido.css"
+import DefaultLayout from "../layout/Portal2"; 
 
-const API_URL = "http://localhost:3000/api/citas";
+
+const API_URL = "https://cda-back-adia.onrender.com/api/citas";
 
 interface Cita {
   codigoCita: string;
@@ -95,11 +98,11 @@ export default function Bienvenido() {
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
+    <DefaultLayout>
+    <div className="container">
       <h1>Bienvenido a la Tecnomecánica</h1>
-      <h2>Lista de Citas</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <div>
+      <div className="buscar-cita">
         <input
           type="text"
           placeholder="Ingrese el código de la cita"
@@ -110,7 +113,7 @@ export default function Bienvenido() {
       </div>
 
       {citaBuscada && (
-        <div>
+         <div className="detalle-cita">
           <h2>Detalles de la Cita</h2>
           <p><strong>Nombre:</strong> {citaBuscada.nombre}</p>
           <p><strong>Correo:</strong> {citaBuscada.correo}</p>
@@ -146,7 +149,8 @@ export default function Bienvenido() {
 
       <h2>Citas Pendientes</h2>
       {citas.length > 0 ? (
-        <table style={{ margin: "0 auto", width: "80%" }}>
+          <div className="tabla-responsive">
+            <table>
           <thead>
             <tr>
               <th>Código</th>
@@ -188,19 +192,11 @@ export default function Bienvenido() {
                   <td>{cita.placa}</td>
                   <td>{cita.cdaSeleccionado}</td>
                   <td>
-                    <button
-                      onClick={() => navigate(`/revision/${cita.codigoCita}`)}
-                      style={{
-                        backgroundColor: botonColor,
-                        color: "white",
-                        padding: "10px 20px",
-                        cursor:
-                          cita.estado === "Tecnomecánica realizada" || esCitaVencida(cita.fechaCita, cita.horaCita)
-                            ? "not-allowed"
-                            : "pointer",
-                      }}
-                      disabled={cita.estado === "Tecnomecánica realizada" || esCitaVencida(cita.fechaCita, cita.horaCita)}
-                    >
+                  <button
+                          onClick={() => navigate(`/revision/${cita.codigoCita}`)}
+                          className={botonColor}
+                          disabled={cita.estado === "Tecnomecánica realizada" || esCitaVencida(cita.fechaCita, cita.horaCita)}
+                        >
                       {botonTexto}
                     </button>
                   </td>
@@ -209,9 +205,11 @@ export default function Bienvenido() {
             })}
           </tbody>
         </table>
+        </div>
       ) : (
         <p>No hay citas registradas.</p>
       )}
     </div>
+    </DefaultLayout>
   );
 }

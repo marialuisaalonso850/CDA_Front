@@ -5,8 +5,8 @@ import { jsPDF } from "jspdf";
 import "../css/detalles.css";
 
 // API URLs
-const API_URL = "http://localhost:3000/api/citas";
-const REVISION_API_URL = "http://localhost:3000/api/revisiones";
+const API_URL = "https://cda-back-adia.onrender.com/api/citas";
+const REVISION_API_URL = "https://cda-back-adia.onrender.com/api/revisiones";
 const PASSWORD = "admin123";
 
 // Interfaces
@@ -125,37 +125,81 @@ const Detalles = () => {
 
   const generarPDF = () => {
     if (!citaBuscada) return;
-
+  
     const doc = new jsPDF();
-    doc.setFontSize(18);
-    doc.text("Comprobante Revisión Técnico-Mecánica", 20, 20);
-
-    const { nombre, correo, telefono, fechaCita, horaCita, placa, cdaSeleccionado, revision, estado, codigoCita } = citaBuscada;
-
+  
+    // Logo
+    const logo = new Image();
+    logo.src = "../public/img/logo.webp"; // Cambia la ruta al logo
+    doc.addImage(logo, 'WEBP', 10, 10, 40, 20); // Logo alineado a la izquierda
+  
+    // Título (Centrado y con mayor espacio)
+    const title = "Comprobante de Revisión Técnico-Mecánica";
+    doc.setFontSize(22);
+    doc.setFont("helvetica", "bold");
+    const titleWidth = doc.getTextWidth(title);
+    const titleX = (doc.internal.pageSize.width - titleWidth) / 2;
+    doc.text(title, titleX, 50); // Título centrado, separado del logo
+  
+    // Fecha de emisión (Alineada a la derecha y con más separación)
     doc.setFontSize(12);
-    doc.text(`Nombre: ${nombre}`, 20, 40);
-    doc.text(`Correo: ${correo}`, 20, 50);
-    doc.text(`Teléfono: ${telefono}`, 20, 60);
-    doc.text(`Fecha: ${fechaCita}`, 20, 70);
-    doc.text(`Hora: ${horaCita}`, 20, 80);
-    doc.text(`Placa: ${placa}`, 20, 90);
-    doc.text(`CDA: ${cdaSeleccionado}`, 20, 100);
-
-    doc.text("Detalles de la Revisión:", 20, 110);
-    if (revision) {
-      doc.text(`Luces delanteras: ${revision.electricidad.luces}`, 20, 120);
-      doc.text(`Luces traseras: ${revision.electricidad.direccionales}`, 20, 130);
-      doc.text(`Frenos: ${revision.seguridad.frenos}`, 20, 140);
-      doc.text(`Neumáticos: ${revision.seguridad.llantasRines}`, 20, 150);
-      doc.text(`Estado del motor: ${revision.estadoFinal}`, 20, 160);
+    const dateText = "Fecha de emisión: " + new Date().toLocaleDateString();
+    doc.text(dateText, doc.internal.pageSize.width - 20 - doc.getTextWidth(dateText), 60); // Fecha alineada a la derecha y un poco más abajo
+    
+    // Cuadro de información del cliente
+    doc.setFillColor(235, 235, 235); // Color de fondo gris claro
+    doc.rect(20, 70, 180, 50, 'F'); // Crear cuadro para información del cliente
+    doc.setFontSize(12);
+    doc.setFont("times", "normal");
+    doc.text("Información del Cliente", 20, 80);
+    doc.text(`Nombre: ${citaBuscada.nombre}`, 30, 90);
+    doc.text(`Correo: ${citaBuscada.correo}`, 30, 100);
+    doc.text(`Teléfono: ${citaBuscada.telefono}`, 30, 110);
+    doc.text(`Placa: ${citaBuscada.placa}`, 30, 120);
+    
+    // Espaciado
+    doc.line(20, 130, 200, 130); // Línea horizontal de separación
+    
+    // Información de la cita
+    doc.setFillColor(235, 235, 235); 
+    doc.rect(20, 135, 180, 30, 'F'); 
+    doc.text("Detalles de la Cita", 20, 145);
+    doc.text(`Fecha: ${citaBuscada.fechaCita}`, 30, 155);
+    doc.text(`Hora: ${citaBuscada.horaCita}`, 30, 165);
+    doc.text(`CDA: ${citaBuscada.cdaSeleccionado}`, 30, 175);
+    
+    // Detalles de la revisión (si existen)
+    if (citaBuscada.revision) {
+      doc.setFillColor(235, 235, 235); 
+      doc.rect(20, 180, 180, 100, 'F'); 
+      doc.text("Detalles de la Revisión:", 20, 190);
+      
+      // Sección de electricidad
+      doc.text(`Luces delanteras: ${citaBuscada.revision.electricidad.luces}`, 30, 200);
+      doc.text(`Luces traseras: ${citaBuscada.revision.electricidad.direccionales}`, 30, 210);
+      
+      // Sección de seguridad
+      doc.text(`Frenos: ${citaBuscada.revision.seguridad.frenos}`, 30, 220);
+      doc.text(`Neumáticos: ${citaBuscada.revision.seguridad.llantasRines}`, 30, 230);
+      
+      // Estado final
+      doc.text(`Estado del motor: ${citaBuscada.revision.estadoFinal}`, 30, 240);
     }
-
-    doc.text("Estado de la Revisión:", 20, 170);
-    doc.text(`${estado || "Sin estado"}`, 20, 180);
-
-    doc.save(`${codigoCita}_revision.pdf`);
+    
+    // Estado final de la revisión
+    doc.setFillColor(235, 235, 235); 
+    doc.rect(20, 250, 180, 30, 'F'); 
+    doc.text("Estado de la Revisión:", 20, 260);
+    doc.text(`${citaBuscada.estado || "Sin estado"}`, 30, 270);
+    
+    // Footer
+    doc.setFontSize(10);
+    doc.text("Generado por Sistema de Citas Técnicas", 20, 280);
+    
+    // Guardar el PDF
+    doc.save(`${citaBuscada.codigoCita}_revision.pdf`);
   };
-
+  
   const cancelarCita = async (codigo: string) => {
     const codigoLimpio = codigo.trim();
 
@@ -277,10 +321,14 @@ const Detalles = () => {
   return (
     <DefaultLayout ingresoPermitido={ingresoPermitido}>
       {!ingresoPermitido ? (
-        <div className="password-wrapper">
-          <div className="password-card">
-            <h1>Administrador: Luisa</h1>
+       <div className="login-wrapper">
+       <div className="login-container">
+         <div className="left-side">
+         <h1>Administrador: Luisa</h1>
+         <p>Por favor ingrese la contraseña para continuar.</p>
             <img src="../img/logo.webp" alt="Logo" className="login-logo" />
+            </div>
+            <div className="right-side">
             <div className="password-container">
               <h2>Ingrese la contraseña</h2>
               <input
@@ -290,6 +338,7 @@ const Detalles = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <button onClick={verificarPassword}>Ingresar</button>
+            </div>
             </div>
           </div>
         </div>

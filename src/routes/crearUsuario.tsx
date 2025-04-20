@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect } from "react";
 import DefaultLayout from "../layout/DefaultLayout";
 import { API_URL } from "../Autenticacion/constanst";
 import type { AuthResponseError } from "../types/types";
+
 
 export default function CrearUsuario() {
   const [name, setName] = useState("");
@@ -13,7 +13,6 @@ export default function CrearUsuario() {
   const [usuarios, setUsuarios] = useState<any[]>([]);
   
   
-
   useEffect(() => {
     obtenerUsuarios();
   }, []);

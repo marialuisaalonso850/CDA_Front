@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../css/revision.css";
+import PortalLayout from "../layout/Portal"; 
 
-const API_URL = "http://localhost:3000/api/revisiones";
-const CITA_API_URL = "http://localhost:3000/api/citas";
-const VEHICULO_API_URL = "http://localhost:3000/api/placas";
+const API_URL = "https://cda-back-adia.onrender.com/api/revisiones";
+const CITA_API_URL = "https://cda-back-adia.onrender.com/api/citas";
+const VEHICULO_API_URL = "https://cda-back-adia.onrender.com/api/placas";
 
 export interface Seguridad {
   // Frenos
@@ -161,19 +162,25 @@ export default function Revision() {
     section?: keyof RevisionType
   ) => {
     const { name, value } = e.target;
+  
     setRevision((prev) => {
-      if (section && typeof prev[section] === "object") {
+      // Verifica si 'section' es un valor válido y 'prev[section]' es un objeto
+      if (section && typeof prev[section] === "object" && prev[section] !== null) {
         return {
           ...prev,
           [section]: {
-            ...prev[section],
+            // Spread solo si prev[section] es un objeto
+            ...(prev[section] as Record<string, any>), // Aseguramos que prev[section] es un objeto
             [name]: value,
           },
         };
       }
+  
+      // Si no es un objeto, se hace el spread directamente sobre el valor de 'prev'
       return { ...prev, [name]: value };
     });
   };
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -201,7 +208,7 @@ export default function Revision() {
 
       alert("Revisión guardada y cita actualizada");
       navigate("/");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error en handleSubmit:", error);
       alert(`Error: ${error.message}`);
     }
@@ -240,6 +247,7 @@ export default function Revision() {
   }
 
   return (
+    <PortalLayout>
     <div style={{ textAlign: "center", marginTop: "30px" }}>
       <h1 style={{ marginBottom: "20px" }}>Formulario de Revisión Técnico-Mecánica</h1>
 
@@ -703,5 +711,6 @@ export default function Revision() {
       )}      
       </form>
     </div>
+    </PortalLayout>
   );
 }

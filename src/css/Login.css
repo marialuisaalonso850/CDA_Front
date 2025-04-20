@@ -1,0 +1,229 @@
+/* General Page Layout */
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* Card container */
+.login-card {
+  display: flex;
+  flex-direction: row;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  max-width: 900px;
+  width: 100%;
+  position: relative;
+  margin-top: 30px;
+  justify-content: center;
+}
+
+/* Info Section (left) */
+.login-info {
+  flex: 1;
+  color: #ccc;
+  background-color: #474545;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+  text-align: center;
+  z-index: 1;
+}
+
+.login-logo {
+  max-width: 180px;
+  margin-bottom: 30px;
+}
+
+.login-info h1 {
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+  color: #28a745;
+}
+
+.login-info p {
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  color: #ccc;
+}
+
+/* Form Section (right) */
+.form-container {
+  flex: 1;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #fff;
+  border-radius: 0 20px 20px 0;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  transform: translateY(-10px);
+  z-index: 2;
+}
+
+.form-container h2 {
+  font-size: 1.8rem;
+  text-align: center;
+  color: #28a745;
+  margin-bottom: 25px;
+}
+
+.form-container label {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.form-container input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.form-container button {
+  width: 100%;
+  padding: 12px;
+  background-color: #28a745;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.form-container button:hover {
+  background-color: #218838;
+}
+
+/* Error Message */
+.errorMessage {
+  color: red;
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+/* Navbar sin fondo negro */
+.navbar {
+  background-color: transparent;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+}
+
+.navbar a {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  text-decoration: none;
+  margin-left: 20px;
+}
+
+.navbar a:hover {
+  color: #28a745;
+  text-decoration: underline;
+}
+
+/* Responsive Layout */
+
+/* Móvil */
+@media (max-width: 576px) {
+  .login-page {
+    padding: 20px 0;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  .login-card {
+    flex-direction: column;
+    max-width: 400px;
+    margin-top: 0; /* Sin espacio arriba */
+  }
+
+  /* Ocultar sección de la izquierda (info) */
+  .login-info {
+    display: none;
+  }
+
+  /* Ajuste de formulario en móvil */
+  .form-container {
+    padding: 20px;
+    margin-top: -30px; /* Subir aún más el formulario */
+    box-shadow: none; /* Menos sombra para que se vea más limpio */
+    width: 100%;
+    border-radius: 15px;
+  }
+
+  .form-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+
+  .form-container input {
+    padding: 10px;
+  }
+
+  .form-container button {
+    padding: 10px;
+  }
+
+  .login-card .form-container {
+    border-radius: 15px;
+  }
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .login-page {
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .login-card {
+    flex-direction: column;
+    max-width: 700px;
+    margin-top: 30px;
+    justify-content: center;
+  }
+
+  .login-info {
+    padding: 30px;
+    text-align: center;
+    width: 100%;
+  }
+
+  .form-container {
+    padding: 30px;
+    width: 100%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+  }
+
+  .login-info h1 {
+    font-size: 2rem;
+  }
+
+  .login-info p {
+    font-size: 1rem;
+  }
+
+  .form-container h2 {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+}
