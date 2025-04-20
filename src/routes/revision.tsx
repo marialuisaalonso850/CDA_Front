@@ -111,7 +111,7 @@ export default function Revision() {
       observacionesElectricidad: "",
     },
     observaciones: "",
-    estadoFinal: "Aprobado", // Inicializando el estado final
+    estadoFinal: "Aprobada", // Inicializando el estado final
   });
 
   const [cita, setCita] = useState<CitaType | null>(null);
@@ -207,15 +207,6 @@ export default function Revision() {
     }
   };
 
-  const buttonStyle = {
-    padding: "10px 20px",
-    fontSize: "16px",
-    borderRadius: "6px",
-    backgroundColor: cita?.estado === "Pendiente" || cita?.estado === "Rechazado" ? "#2196F3" : "#4CAF50",
-    color: "white",
-    border: "none",
-  };
-
   const inputStyle = {
     width: "100%",
     padding: "10px",
@@ -225,6 +216,28 @@ export default function Revision() {
     border: "1px solid #ccc",
     fontSize: "15px",
   };
+
+  function calcularEstadoFinal(): "Aprobada" | "Reprobada" {
+    const s = revision.seguridad;
+    const a = revision.ambiental;
+    const e = revision.electricidad;
+  
+    const secciones = [
+      s.frenos,
+      s.direccion,
+      s.suspension,
+      s.llantasRines,
+      a.emisiones === "Dentro del límite" ? "Aprobado" : "Reprobado",
+      a.escape,
+      e.luces,
+      e.direccionales,
+      e.claxon
+    ];
+  
+    const algunaFalla = secciones.some(val => val === "Reprobado" || val === "No Funcionando" || val === "Fuera del límite");
+  
+    return algunaFalla ? "Reprobada" : "Aprobada";
+  }
 
   return (
     <div style={{ textAlign: "center", marginTop: "30px" }}>
@@ -656,24 +669,38 @@ export default function Revision() {
 
         {seccionActiva === "resumen" && (
           <div>
-          <h3>Estado Final</h3>
-          <select
-            name="estadoFinal"
-            value={revision.estadoFinal}
-            onChange={handleChange}
-            style={inputStyle}
+          <h3>Resumen de revisión</h3>
+      
+          <ul>
+            <li><strong>Frenos:</strong> {revision.seguridad.frenos}</li>
+            <li><strong>Suspensión:</strong> {revision.seguridad.suspension}</li>
+            <li><strong>Dirección:</strong> {revision.seguridad.direccion}</li>
+            <li><strong>Llantas y Rines:</strong> {revision.seguridad.llantasRines}</li>
+            <li><strong>Emisiones:</strong> {revision.ambiental.emisiones}</li>
+            <li><strong>Escape:</strong> {revision.ambiental.escape}</li>
+            <li><strong>Luces:</strong> {revision.electricidad.luces}</li>
+            <li><strong>Direccionales:</strong> {revision.electricidad.direccionales}</li>
+            <li><strong>Claxon:</strong> {revision.electricidad.claxon}</li>
+          </ul>
+      
+          <p>
+            <strong>Estado final de la revisión:</strong>{" "}
+            {calcularEstadoFinal().toUpperCase()}
+          </p>
+      
+          <button
+            type="submit"
+            onClick={() =>
+              setRevision(prev => ({
+                ...prev,
+                estadoFinal: calcularEstadoFinal()
+              }))
+            }
           >
-            <option value="Aprobado">Aprobado</option>
-            <option value="Rechazado">Rechazado</option>
-          </select>
-
-        <div>
-          <button type="submit" style={buttonStyle} disabled={!isValidForm()}>
-            Guardar Revisión
+            Guardar revisión
           </button>
         </div>
-        </div>
-        )}
+      )}      
       </form>
     </div>
   );
