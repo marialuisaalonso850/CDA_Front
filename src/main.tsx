@@ -12,29 +12,29 @@ import Detalles from './routes/Detalles'
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home/>
+    element: <Home/> // Ruta pública para la página de inicio
   },
   {
     path: "/login",
-    element: <Login/>
+    element: <Login/> // Ruta pública para login
   },
   {
     path: "/citas",
-    element: <AgendarCita/>
+    element: <AgendarCita/> // Ruta para agendar citas
   },
   {
     path: "/detalle",
-    element: <Detalles/>
+    element: <Detalles/> // Ruta para ver detalles
   },
   {
-    path: "/",
+    path: "/protected", // Ruta protegida, para evitar conflicto con la raíz
     element: <ProtectedRoute/>,
     children:[
-      
-      
+      // Aquí puedes agregar más rutas protegidas
     ]
   },
 ])
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <AuthProvider>
@@ -42,5 +42,3 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     </AuthProvider>
   </React.StrictMode>,
 )
-
-
