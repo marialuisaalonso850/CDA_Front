@@ -287,25 +287,27 @@ export default function Revision() {
 
       <form onSubmit={handleSubmit} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "30px", width: "90%", maxWidth: "1100px", margin: "0 auto", textAlign: "left" }}>
       {seccionActiva === "datos" && (
-          <div>
-          <h3>Datos del Vehículo</h3>
-          <div className="section-box">
-          {["placa", "marca", "modelo", "kilometraje"].map((campo) => (
-            <div key={campo}>
-              <label>{campo.charAt(0).toUpperCase() + campo.slice(1)}:</label>
-              <input
-                type={campo === "kilometraje" ? "number" : "text"}
-                name={campo}
-                value={(revision as any)[campo]}
-                onChange={handleChange}
-                required
-                style={inputStyle}
-              />
-            </div>
-          ))}
+        <div>
+          <h2 style={{ marginBottom: "15px", color: "#0056b3" }}>Datos del Vehículo</h2>
+          <div className="section-box section-grid">
+            {["placa", "marca", "modelo", "kilometraje"].map((campo) => (
+              <div key={campo}>
+                <label style={{ fontWeight: "bold", color: "#333" }}>
+                  {campo.charAt(0).toUpperCase() + campo.slice(1)}:
+                </label>
+                <input
+                  type={campo === "kilometraje" ? "number" : "text"}
+                  name={campo}
+                  value={(revision as any)[campo]}
+                  onChange={handleChange}
+                  required
+                  style={inputStyle}
+                />
+              </div>
+            ))}
           </div>
-          </div>
-        )}
+        </div>
+      )}
 
       {seccionActiva === "seguridad" && (
         <div>
@@ -638,7 +640,7 @@ export default function Revision() {
         </div>
 
         {/* Direccionales */}
-        <div className="section-box">
+        <div>
           <label>Direccionales:</label>
           <select
             name="direccionales"

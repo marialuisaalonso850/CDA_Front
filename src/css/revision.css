@@ -54,69 +54,34 @@
   font-size: 22px;
 }
 
+/* Estilo para las cajas de sección */
 .section-box {
-  padding: 20px;
-  border: 1px solid #e4e4e4;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
   border-radius: 10px;
-  margin-bottom: 25px;
-  background-color: #fafafa;
-}
-
-/* Estructura responsive para secciones */
-.section-container {
-  max-width: 1200px;
-  margin: 0 auto;
   padding: 20px;
+  margin-bottom: 25px;
 }
 
-/* Título principal de la sección */
-.section-title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-/* Título de cada subsección, como "Frenos", "Dirección", etc. */
+/* Título de subsección (ej: Frenos, Dirección...) */
 .subsection-title {
   font-size: 18px;
-  font-weight: 600;
+  font-weight: bold;
+  margin-bottom: 15px;
   color: #0056b3;
-  margin-top: 30px;
-  margin-bottom: 10px;
-  border-bottom: 2px solid #e0e0e0;
-  padding-bottom: 4px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 5px;
 }
 
-/* Grid responsive */
+/* Distribución de campos en columnas */
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
 }
 
-/* Estilos de inputs y etiquetas */
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group label {
-  font-weight: 500;
-  margin-bottom: 5px;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-/* Responsive para móviles */
 @media (max-width: 768px) {
-  .form-grid {
+  .section-grid {
     grid-template-columns: 1fr;
   }
 }
