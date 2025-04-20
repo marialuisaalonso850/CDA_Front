@@ -1,10 +1,10 @@
 import { useState } from "react";
+import { API_URL } from "../Autenticacion/constanst";
 import DefaultLayout from "../layout/DefaultLayout";
 import Swal from "sweetalert2"; 
 import '../css/Contac.css';
 import "../css/detalles.css";
 
-const API_URL = "https://cda-back7-rz6z.onrender.com/api/citas"; 
 
 const Detalles = () => {
   const [codigoCita, setCodigoCita] = useState("");
@@ -19,7 +19,7 @@ const Detalles = () => {
     }
 
     try {
-      const response = await fetch(`${API_URL}/${codigoCita}`);
+      const response = await fetch(`${API_URL}/citas/${codigoCita}`);
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.error || "Error al buscar la cita");
@@ -50,7 +50,7 @@ const Detalles = () => {
     if (!resultado.isConfirmed) return;
 
     try {
-      const response = await fetch(`${API_URL}/${citaBuscada.codigoCita}`, {
+      const response = await fetch(`${API_URL}/citas/${citaBuscada.codigoCita}`, {
         method: "DELETE",
       });
 

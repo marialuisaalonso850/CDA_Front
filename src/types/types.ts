@@ -4,7 +4,6 @@ export interface AuthResponse{
         accessToken: string;
         refreshToken: string;
     };
-
 }
 
 export interface AuthResponseError{
@@ -25,5 +24,4 @@ export interface AccessTokenResponse{
         accesToken: string;
     };
     error?: string;
-    
 }
