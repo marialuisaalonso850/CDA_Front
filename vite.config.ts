@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     host: true,
     strictPort: true,
-    port: 8080,
+    port: 5173,
   },
   build: {
     rollupOptions: {
