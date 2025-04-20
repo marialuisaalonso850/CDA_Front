@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import React from "react";
 import logo from "../assets/image.png"; 
+import "../css/PortalLayout.css"
 
 interface DefaultLayoutProps {
   children: React.ReactNode;

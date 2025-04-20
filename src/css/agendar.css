@@ -1,9 +1,57 @@
+/* Layout principal */
+body, html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header fijo ordenado */
+header {
+  background-color: green;
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 15px;
+  background-color: #f4f4f4;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Footer fijo ordenado */
+footer {
+  background: #333;
+  color: white;
+  padding: 15px;
+  text-align: center;
+}
+
+/* Agendar */
 .agendar-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f4f4f4;
+  align-items: flex-start;
+  padding: 30px 15px;
+  box-sizing: border-box;
 }
 
 .card {
@@ -11,9 +59,8 @@
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  width: 50%;
-  margin-top: 100px;
-  
+  width: 100%;
+  max-width: 600px;
 }
 
 h1 {
@@ -61,6 +108,7 @@ button {
 button:hover {
   background-color: darkgreen;
 }
+
 .info-text {
   text-align: left;
   font-size: 14px;
@@ -69,4 +117,55 @@ button:hover {
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 15px;
+}
+
+/* Responsivo */
+@media (max-width: 1024px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .full-width {
+    grid-column: span 1;
+  }
+  .card {
+    padding: 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .agendar-container {
+    padding: 20px 10px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  input, select {
+    padding: 8px;
+  }
+
+  button {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .info-text {
+    font-size: 13px;
+  }
 }
