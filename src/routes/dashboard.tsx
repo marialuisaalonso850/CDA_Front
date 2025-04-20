@@ -29,7 +29,7 @@ export default function Dashboard(){
       const response = await fetch(`${API_URL}/todos`,{
         headers:{
           "Content-Type": "application/json",
-          Authorization: `Bearer ${auth.getAccessToken()}`
+          // Authorization: `Bearer ${auth.getAccessToken()}`
         },
       });
 
