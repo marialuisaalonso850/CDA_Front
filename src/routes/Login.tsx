@@ -35,6 +35,7 @@ export default function Login(){
         const json =(await response.json()) as AuthResponse;
         
         if(json.body.accessToken && json.body.refreshToken){
+          auth.saveUser(json);
 
           goto("/citas")
 
