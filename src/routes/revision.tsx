@@ -252,18 +252,44 @@ export default function Revision() {
         </div>
       )}
 
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-        <button onClick={() => setSeccionActiva("datos")}>Datos del vehículo</button>
-        <button onClick={() => setSeccionActiva("seguridad")}>Seguridad</button>
-        <button onClick={() => setSeccionActiva("ambiental")}>Ambiental</button>
-        <button onClick={() => setSeccionActiva("electricidad")}>Electricidad</button>
-        <button onClick={() => setSeccionActiva("resumen")}>Resumen</button>
+      <div className="tab-container">
+        <button
+          className={`tab-button ${seccionActiva === "datos" ? "active" : ""}`}
+          onClick={() => setSeccionActiva("datos")}
+        >
+          Datos del vehículo
+        </button>
+        <button
+          className={`tab-button ${seccionActiva === "seguridad" ? "active" : ""}`}
+          onClick={() => setSeccionActiva("seguridad")}
+        >
+          Seguridad
+        </button>
+        <button
+          className={`tab-button ${seccionActiva === "ambiental" ? "active" : ""}`}
+          onClick={() => setSeccionActiva("ambiental")}
+        >
+          Ambiental
+        </button>
+        <button
+          className={`tab-button ${seccionActiva === "electricidad" ? "active" : ""}`}
+          onClick={() => setSeccionActiva("electricidad")}
+        >
+          Electricidad
+        </button>
+        <button
+          className={`tab-button ${seccionActiva === "resumen" ? "active" : ""}`}
+          onClick={() => setSeccionActiva("resumen")}
+        >
+          Resumen
+        </button>
       </div>
 
       <form onSubmit={handleSubmit} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "30px", width: "90%", maxWidth: "1100px", margin: "0 auto", textAlign: "left" }}>
       {seccionActiva === "datos" && (
           <div>
           <h3>Datos del Vehículo</h3>
+          <div className="section-box">
           {["placa", "marca", "modelo", "kilometraje"].map((campo) => (
             <div key={campo}>
               <label>{campo.charAt(0).toUpperCase() + campo.slice(1)}:</label>
@@ -278,6 +304,7 @@ export default function Revision() {
             </div>
           ))}
           </div>
+          </div>
         )}
 
       {seccionActiva === "seguridad" && (
@@ -285,7 +312,7 @@ export default function Revision() {
         <h3>Seguridad</h3>
 
         {/* Frenos */}
-        <div>
+        <div className="section-box">
           <label>Frenos:</label>
           <select
             name="frenos"
@@ -336,7 +363,7 @@ export default function Revision() {
         </div>
 
         {/* Dirección */}
-        <div>
+        <div className="section-box">
           <label>Dirección:</label>
           <select
             name="direccion"
@@ -379,7 +406,7 @@ export default function Revision() {
         </div>
 
         {/* Suspensión */}
-        <div>
+        <div className="section-box">
           <label>Suspensión:</label>
           <select
             name="suspension"
@@ -429,7 +456,7 @@ export default function Revision() {
         </div>
 
         {/* Llantas y Rines */}
-        <div>
+        <div className="section-box">
           <label>Llantas y Rines:</label>
           <select
             name="llantasRines"
@@ -486,7 +513,7 @@ export default function Revision() {
           <h3>Ambiental</h3>
 
           {/* Emisiones de Gases */}
-          <div>
+          <div className="section-box">
             <label>Emisiones:</label>
             <select
               name="emisiones"
@@ -549,7 +576,7 @@ export default function Revision() {
           </div>
 
           {/* Sistema de escape */}
-          <div>
+          <div className="section-box">
             <label>Sistema de escape:</label>
             <select
               name="escape"
@@ -588,7 +615,7 @@ export default function Revision() {
         <h3>Electricidad</h3>
 
         {/* Luces */}
-        <div>
+        <div className="section-box">
           <label>Luces:</label>
           <select
             name="luces"
@@ -611,7 +638,7 @@ export default function Revision() {
         </div>
 
         {/* Direccionales */}
-        <div>
+        <div className="section-box">
           <label>Direccionales:</label>
           <select
             name="direccionales"
@@ -634,7 +661,7 @@ export default function Revision() {
         </div>
 
         {/* Claxon */}
-        <div>
+        <div className="section-box">
           <label>Claxon:</label>
           <select
             name="claxon"
