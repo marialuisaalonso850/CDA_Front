@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../css/revision.css";
-import PortalLayout from "../layout/Portal"; 
+import Portal from "../layout/Portal";
 
-const API_URL = "https://cda-back-adia.onrender.com/api/revisiones";
-const CITA_API_URL = "https://cda-back-adia.onrender.com/api/citas";
-const VEHICULO_API_URL = "https://cda-back-adia.onrender.com/api/placas";
+const API_URL = "https://cda-back7-rz6z.onrender.com/api/revisiones";
+const CITA_API_URL = "https://cda-back7-rz6z.onrender.com/api/citas";
+const VEHICULO_API_URL = "https://cda-back7-rz6z.onrender.com/api/placas";
 
 export interface Seguridad {
   // Frenos
@@ -162,7 +162,7 @@ export default function Revision() {
     section?: keyof RevisionType
   ) => {
     const { name, value } = e.target;
-  
+
     setRevision((prev) => {
       // Verifica si 'section' es un valor válido y 'prev[section]' es un objeto
       if (section && typeof prev[section] === "object" && prev[section] !== null) {
@@ -175,12 +175,11 @@ export default function Revision() {
           },
         };
       }
-  
+
       // Si no es un objeto, se hace el spread directamente sobre el valor de 'prev'
       return { ...prev, [name]: value };
     });
   };
-  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -207,12 +206,13 @@ export default function Revision() {
       if (!updateResponse.ok) throw new Error("Error al actualizar la cita");
 
       alert("Revisión guardada y cita actualizada");
-      navigate("/");
-    } catch (error: any) {
-      console.error("Error en handleSubmit:", error);
-      alert(`Error: ${error.message}`);
-    }
-  };
+  navigate("/");
+} catch (error) {
+  console.error("Error en handleSubmit:", error);
+  const mensaje = (error as any).message || "Ocurrió un error inesperado.";
+  alert(`Error: ${mensaje}`);
+}
+  }
 
   const inputStyle = {
     width: "100%",
@@ -247,7 +247,7 @@ export default function Revision() {
   }
 
   return (
-    <PortalLayout>
+    <Portal>
     <div style={{ textAlign: "center", marginTop: "30px" }}>
       <h1 style={{ marginBottom: "20px" }}>Formulario de Revisión Técnico-Mecánica</h1>
 
@@ -260,442 +260,551 @@ export default function Revision() {
         </div>
       )}
 
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-        <button onClick={() => setSeccionActiva("datos")}>Datos del vehículo</button>
-        <button onClick={() => setSeccionActiva("seguridad")}>Seguridad</button>
-        <button onClick={() => setSeccionActiva("ambiental")}>Ambiental</button>
-        <button onClick={() => setSeccionActiva("electricidad")}>Electricidad</button>
-        <button onClick={() => setSeccionActiva("resumen")}>Resumen</button>
+      <div className="tab-container">
+        <button
+          className={`tab-button ${seccionActiva === "datos" ? "active" : ""}`}
+          onClick={() => setSeccionActiva("datos")}
+        >
+          Datos del vehículo
+        </button>
+        <button
+          className={`tab-button ${seccionActiva === "seguridad" ? "active" : ""}`}
+          onClick={() => setSeccionActiva("seguridad")}
+        >
+          Seguridad
+        </button>
+        <button
+          className={`tab-button ${seccionActiva === "ambiental" ? "active" : ""}`}
+          onClick={() => setSeccionActiva("ambiental")}
+        >
+          Ambiental
+        </button>
+        <button
+          className={`tab-button ${seccionActiva === "electricidad" ? "active" : ""}`}
+          onClick={() => setSeccionActiva("electricidad")}
+        >
+          Electricidad
+        </button>
+        <button
+          className={`tab-button ${seccionActiva === "resumen" ? "active" : ""}`}
+          onClick={() => setSeccionActiva("resumen")}
+        >
+          Resumen
+        </button>
       </div>
 
-      <form onSubmit={handleSubmit} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "30px", width: "90%", maxWidth: "1100px", margin: "0 auto", textAlign: "left" }}>
+      <form onSubmit={handleSubmit} style={{ display: "grid", gridTemplateColumns: "1fr", gap: "30px", width: "90%", maxWidth: "1100px", margin: "0 auto", textAlign: "left" }}>
       {seccionActiva === "datos" && (
-          <div>
-          <h3>Datos del Vehículo</h3>
-          {["placa", "marca", "modelo", "kilometraje"].map((campo) => (
-            <div key={campo}>
-              <label>{campo.charAt(0).toUpperCase() + campo.slice(1)}:</label>
+      <div>
+        <h3 className="subsection-title">Datos del Vehículo</h3>
+        <div className="section-box">
+          <div className="form-grid">
+            {["placa", "marca", "modelo", "kilometraje"].map((campo) => (
+              <div key={campo}>
+                <label>{campo.charAt(0).toUpperCase() + campo.slice(1)}:</label>
+                <input
+                  type={campo === "kilometraje" ? "number" : "text"}
+                  name={campo}
+                  value={(revision as any)[campo]}
+                  onChange={handleChange}
+                  required
+                  style={inputStyle}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )}
+
+    {seccionActiva === "seguridad" && (
+      <div>
+        <h3 className="subsection-title">Revisión de Seguridad</h3>
+
+        {/* FRENOS */}
+        <div className="section-box">
+          <h4 className="subsection-title">Frenos</h4>
+          <div className="form-grid">
+            <div>
+              <label>Estado:</label>
+              <select
+                name="frenos"
+                value={revision.seguridad.frenos}
+                onChange={(e) => handleChange(e, "seguridad")}
+              >
+                <option value="Aprobado">Aprobado</option>
+                <option value="Reprobado">Reprobado</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Fuerza de frenado delantera (N):</label>
               <input
-                type={campo === "kilometraje" ? "number" : "text"}
-                name={campo}
-                value={(revision as any)[campo]}
-                onChange={handleChange}
-                required
-                style={inputStyle}
+                type="number"
+                name="fuerzaFrenadoDelantera"
+                value={revision.seguridad.fuerzaFrenadoDelantera || ""}
+                onChange={(e) => handleChange(e, "seguridad")}
               />
             </div>
-          ))}
+
+            <div>
+              <label>Fuerza de frenado trasera (N):</label>
+              <input
+                type="number"
+                name="fuerzaFrenadoTrasera"
+                value={revision.seguridad.fuerzaFrenadoTrasera || ""}
+                onChange={(e) => handleChange(e, "seguridad")}
+              />
+            </div>
+
+            <div>
+              <label>Desbalance de frenado (%):</label>
+              <input
+                type="number"
+                step="0.1"
+                name="desbalanceFrenado"
+                value={revision.seguridad.desbalanceFrenado || ""}
+                onChange={(e) => handleChange(e, "seguridad")}
+              />
+            </div>
+
+            <div style={{ gridColumn: "1 / -1" }}>
+              <label>Observaciones frenos:</label>
+              <input
+                type="text"
+                name="observacionesFrenos"
+                value={revision.seguridad.observacionesFrenos || ""}
+                onChange={(e) => handleChange(e, "seguridad")}
+              />
+            </div>
           </div>
-        )}
-
-      {seccionActiva === "seguridad" && (
-        <div>
-        <h3>Seguridad</h3>
-
-        {/* Frenos */}
-        <div>
-          <label>Frenos:</label>
-          <select
-            name="frenos"
-            value={revision.seguridad.frenos}
-            onChange={(e) => handleChange(e, "seguridad")}
-            style={inputStyle}
-          >
-            <option value="Aprobado">Aprobado</option>
-            <option value="Reprobado">Reprobado</option>
-          </select>
-
-          <label>Fuerza de frenado delantera (N):</label>
-          <input
-            type="number"
-            name="fuerzaFrenadoDelantera"
-            value={revision.seguridad.fuerzaFrenadoDelantera || ""}
-            onChange={(e) => handleChange(e, "seguridad")}
-            style={inputStyle}
-          />
-
-          <label>Fuerza de frenado trasera (N):</label>
-          <input
-            type="number"
-            name="fuerzaFrenadoTrasera"
-            value={revision.seguridad.fuerzaFrenadoTrasera || ""}
-            onChange={(e) => handleChange(e, "seguridad")}
-            style={inputStyle}
-          />
-
-          <label>Desbalance de frenado (%):</label>
-          <input
-            type="number"
-            name="desbalanceFrenado"
-            step="0.1"
-            value={revision.seguridad.desbalanceFrenado || ""}
-            onChange={(e) => handleChange(e, "seguridad")}
-            style={inputStyle}
-          />
-
-          <label>Observaciones frenos:</label>
-          <input
-            type="text"
-            name="observacionesFrenos"
-            value={revision.seguridad.observacionesFrenos || ""}
-            onChange={(e) => handleChange(e, "seguridad")}
-            style={inputStyle}
-          />
         </div>
 
-        {/* Dirección */}
-        <div>
-          <label>Dirección:</label>
-          <select
-            name="direccion"
-            value={revision.seguridad.direccion}
-            onChange={(e) => handleChange(e, "seguridad")}
-            style={inputStyle}
-          >
-            <option value="Aprobado">Aprobado</option>
-            <option value="Reprobado">Reprobado</option>
-          </select>
+        {/* DIRECCIÓN */}
+        <div className="section-box">
+          <h4 className="subsection-title">Dirección</h4>
+          <div className="form-grid">
+            <div>
+              <label>Estado:</label>
+              <select
+                name="direccion"
+                value={revision.seguridad.direccion}
+                onChange={(e) => handleChange(e, "seguridad")}
+              >
+                <option value="Aprobado">Aprobado</option>
+                <option value="Reprobado">Reprobado</option>
+              </select>
+            </div>
 
-          <label>Holgura del volante (° o cm):</label>
-          <input
-            type="number"
-            step="0.1"
-            name="holguraVolante"
-            value={revision.seguridad.holguraVolante || ""}
-            onChange={(e) => handleChange(e, "seguridad")}
-            style={inputStyle}
-          />
+            <div>
+              <label>Holgura del volante (° o cm):</label>
+              <input
+                type="number"
+                step="0.1"
+                name="holguraVolante"
+                value={revision.seguridad.holguraVolante || ""}
+                onChange={(e) => handleChange(e, "seguridad")}
+              />
+            </div>
 
-          <label>Estado rótulas/terminales:</label>
-          <input
-            type="text"
-            name="estadoRotulas"
-            placeholder="Ej: sin juego / con desgaste"
-            value={revision.seguridad.estadoRotulas || ""}
-            onChange={(e) => handleChange(e, "seguridad")}
-            style={inputStyle}
-          />
+            <div>
+              <label>Estado rótulas/terminales:</label>
+              <input
+                type="text"
+                name="estadoRotulas"
+                value={revision.seguridad.estadoRotulas || ""}
+                onChange={(e) => handleChange(e, "seguridad")}
+              />
+            </div>
 
-          <label>Observaciones dirección:</label>
-          <input
-            type="text"
-            name="observacionesDireccion"
-            value={revision.seguridad.observacionesDireccion || ""}
-            onChange={(e) => handleChange(e, "seguridad")}
-            style={inputStyle}
-          />
-        </div>
-
-        {/* Suspensión */}
-        <div>
-          <label>Suspensión:</label>
-          <select
-            name="suspension"
-            value={revision.seguridad.suspension}
-            onChange={(e) => handleChange(e, "seguridad")}
-            style={inputStyle}
-          >
-            <option value="Aprobado">Aprobado</option>
-            <option value="Reprobado">Reprobado</option>
-          </select>
-
-          <label>Rebote izquierdo (N° rebotes):</label>
-          <input
-            type="number"
-            name="reboteIzquierdo"
-            value={revision.seguridad.reboteIzquierdo || ""}
-            onChange={(e) => handleChange(e, "seguridad")}
-            style={inputStyle}
-          />
-
-          <label>Rebote derecho (N° rebotes):</label>
-          <input
-            type="number"
-            name="reboteDerecho"
-            value={revision.seguridad.reboteDerecho || ""}
-            onChange={(e) => handleChange(e, "seguridad")}
-            style={inputStyle}
-          />
-
-          <label>Estado bujes/anclajes:</label>
-          <input
-            type="text"
-            name="estadoBujes"
-            value={revision.seguridad.estadoBujes || ""}
-            onChange={(e) => handleChange(e, "seguridad")}
-            style={inputStyle}
-          />
-
-          <label>Observaciones suspensión:</label>
-          <input
-            type="text"
-            name="observacionesSuspension"
-            value={revision.seguridad.observacionesSuspension || ""}
-            onChange={(e) => handleChange(e, "seguridad")}
-            style={inputStyle}
-          />
-        </div>
-
-        {/* Llantas y Rines */}
-        <div>
-          <label>Llantas y Rines:</label>
-          <select
-            name="llantasRines"
-            value={revision.seguridad.llantasRines}
-            onChange={(e) => handleChange(e, "seguridad")}
-            style={inputStyle}
-          >
-            <option value="Aprobado">Aprobado</option>
-            <option value="Reprobado">Reprobado</option>
-          </select>
-
-          <label>Profundidad del labrado (mm):</label>
-          <input
-            type="number"
-            step="0.1"
-            name="labradoLlantas"
-            value={revision.seguridad.labradoLlantas || ""}
-            onChange={(e) => handleChange(e, "seguridad")}
-            style={inputStyle}
-          />
-
-          <label>Estado de los rines:</label>
-          <input
-            type="text"
-            name="estadoRines"
-            value={revision.seguridad.estadoRines || ""}
-            onChange={(e) => handleChange(e, "seguridad")}
-            style={inputStyle}
-          />
-
-          <label>Observaciones llantas/rines:</label>
-          <input
-            type="text"
-            name="observacionesLlantasRines"
-            value={revision.seguridad.observacionesLlantasRines || ""}
-            onChange={(e) => handleChange(e, "seguridad")}
-            style={inputStyle}
-          />
-        </div>
-
-        {/* Observación general del módulo */}
-        <label>Observaciones generales de seguridad:</label>
-        <textarea
-          name="observacionesSeguridad"
-          value={revision.seguridad.observacionesSeguridad}
-          onChange={(e) => handleChange(e, "seguridad")}
-          style={{ ...inputStyle, height: "60px" }}
-        />
-        </div>
-      )}
-
-      {seccionActiva === "ambiental" && (
-          <div>
-          <h3>Ambiental</h3>
-
-          {/* Emisiones de Gases */}
-          <div>
-            <label>Emisiones:</label>
-            <select
-              name="emisiones"
-              value={revision.ambiental.emisiones}
-              onChange={(e) => handleChange(e, "ambiental")}
-              style={inputStyle}
-            >
-              <option value="Dentro del límite">Dentro del límite</option>
-              <option value="Fuera del límite">Fuera del límite</option>
-            </select>
-
-            <label>CO (%):</label>
-            <input
-              type="number"
-              step="0.01"
-              name="co"
-              value={revision.ambiental.co || ""}
-              onChange={(e) => handleChange(e, "ambiental")}
-              style={inputStyle}
-            />
-
-            <label>CO₂ (%):</label>
-            <input
-              type="number"
-              step="0.01"
-              name="co2"
-              value={revision.ambiental.co2 || ""}
-              onChange={(e) => handleChange(e, "ambiental")}
-              style={inputStyle}
-            />
-
-            <label>HC (ppm):</label>
-            <input
-              type="number"
-              step="1"
-              name="hc"
-              value={revision.ambiental.hc || ""}
-              onChange={(e) => handleChange(e, "ambiental")}
-              style={inputStyle}
-            />
-
-            <label>Opacidad (diesel):</label>
-            <input
-              type="number"
-              step="0.1"
-              name="opacidad"
-              value={revision.ambiental.opacidad || ""}
-              onChange={(e) => handleChange(e, "ambiental")}
-              style={inputStyle}
-            />
-
-            <label>Observaciones emisiones:</label>
-            <input
-              type="text"
-              name="observacionesEmisiones"
-              value={revision.ambiental.observacionesEmisiones || ""}
-              onChange={(e) => handleChange(e, "ambiental")}
-              style={inputStyle}
-            />
+            <div style={{ gridColumn: "1 / -1" }}>
+              <label>Observaciones dirección:</label>
+              <input
+                type="text"
+                name="observacionesDireccion"
+                value={revision.seguridad.observacionesDireccion || ""}
+                onChange={(e) => handleChange(e, "seguridad")}
+              />
+            </div>
           </div>
-
-          {/* Sistema de escape */}
-          <div>
-            <label>Sistema de escape:</label>
-            <select
-              name="escape"
-              value={revision.ambiental.escape}
-              onChange={(e) => handleChange(e, "ambiental")}
-              style={inputStyle}
-            >
-              <option value="Aprobado">Aprobado</option>
-              <option value="Reprobado">Reprobado</option>
-            </select>
-
-            <label>Observaciones escape:</label>
-            <input
-              type="text"
-              name="observacionesEscape"
-              value={revision.ambiental.observacionesEscape || ""}
-              onChange={(e) => handleChange(e, "ambiental")}
-              style={inputStyle}
-            />
-          </div>
-
-          {/* Observaciones generales del módulo */}
-          <label>Observaciones ambientales generales:</label>
-          <textarea
-            name="observacionesAmbiental"
-            value={revision.ambiental.observacionesAmbiental || ""}
-            onChange={(e) => handleChange(e, "ambiental")}
-            style={{ ...inputStyle, height: "60px" }}
-          />
-
-          </div>
-        )}
-
-      {seccionActiva === "electricidad" && (
-        <div>
-        <h3>Electricidad</h3>
-
-        {/* Luces */}
-        <div>
-          <label>Luces:</label>
-          <select
-            name="luces"
-            value={revision.electricidad.luces}
-            onChange={(e) => handleChange(e, "electricidad")}
-            style={inputStyle}
-          >
-            <option value="Funcionando">Funcionando</option>
-            <option value="No Funcionando">No Funcionando</option>
-          </select>
-
-          <label>Observaciones luces:</label>
-          <input
-            type="text"
-            name="observacionesLuces"
-            value={revision.electricidad.observacionesLuces || ""}
-            onChange={(e) => handleChange(e, "electricidad")}
-            style={inputStyle}
-          />
         </div>
 
-        {/* Direccionales */}
-        <div>
-          <label>Direccionales:</label>
-          <select
-            name="direccionales"
-            value={revision.electricidad.direccionales}
-            onChange={(e) => handleChange(e, "electricidad")}
-            style={inputStyle}
-          >
-            <option value="Funcionando">Funcionando</option>
-            <option value="No Funcionando">No Funcionando</option>
-          </select>
+        {/* SUSPENSIÓN */}
+        <div className="section-box">
+          <h4 className="subsection-title">Suspensión</h4>
+          <div className="form-grid">
+            <div>
+              <label>Estado:</label>
+              <select
+                name="suspension"
+                value={revision.seguridad.suspension}
+                onChange={(e) => handleChange(e, "seguridad")}
+              >
+                <option value="Aprobado">Aprobado</option>
+                <option value="Reprobado">Reprobado</option>
+              </select>
+            </div>
 
-          <label>Observaciones direccionales:</label>
-          <input
-            type="text"
-            name="observacionesDireccionales"
-            value={revision.electricidad.observacionesDireccionales || ""}
-            onChange={(e) => handleChange(e, "electricidad")}
-            style={inputStyle}
-          />
+            <div>
+              <label>Rebote izquierdo (N° rebotes):</label>
+              <input
+                type="number"
+                name="reboteIzquierdo"
+                value={revision.seguridad.reboteIzquierdo || ""}
+                onChange={(e) => handleChange(e, "seguridad")}
+              />
+            </div>
+
+            <div>
+              <label>Rebote derecho (N° rebotes):</label>
+              <input
+                type="number"
+                name="reboteDerecho"
+                value={revision.seguridad.reboteDerecho || ""}
+                onChange={(e) => handleChange(e, "seguridad")}
+              />
+            </div>
+
+            <div>
+              <label>Estado de bujes/anclajes:</label>
+              <input
+                type="text"
+                name="estadoBujes"
+                value={revision.seguridad.estadoBujes || ""}
+                onChange={(e) => handleChange(e, "seguridad")}
+              />
+            </div>
+
+            <div style={{ gridColumn: "1 / -1" }}>
+              <label>Observaciones suspensión:</label>
+              <input
+                type="text"
+                name="observacionesSuspension"
+                value={revision.seguridad.observacionesSuspension || ""}
+                onChange={(e) => handleChange(e, "seguridad")}
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Claxon */}
-        <div>
-          <label>Claxon:</label>
-          <select
-            name="claxon"
-            value={revision.electricidad.claxon}
-            onChange={(e) => handleChange(e, "electricidad")}
-            style={inputStyle}
-          >
-            <option value="Funcionando">Funcionando</option>
-            <option value="No Funcionando">No Funcionando</option>
-          </select>
+        {/* LLANTAS Y RINES */}
+        <div className="section-box">
+          <h4 className="subsection-title">Llantas y Rines</h4>
+          <div className="form-grid">
+            <div>
+              <label>Estado:</label>
+              <select
+                name="llantasRines"
+                value={revision.seguridad.llantasRines}
+                onChange={(e) => handleChange(e, "seguridad")}
+              >
+                <option value="Aprobado">Aprobado</option>
+                <option value="Reprobado">Reprobado</option>
+              </select>
+            </div>
 
-          <label>Observaciones claxon:</label>
-          <input
-            type="text"
-            name="observacionesClaxon"
-            value={revision.electricidad.observacionesClaxon || ""}
-            onChange={(e) => handleChange(e, "electricidad")}
-            style={inputStyle}
-          />
+            <div>
+              <label>Profundidad de labrado (mm):</label>
+              <input
+                type="number"
+                step="0.1"
+                name="labradoLlantas"
+                value={revision.seguridad.labradoLlantas || ""}
+                onChange={(e) => handleChange(e, "seguridad")}
+              />
+            </div>
+
+            <div>
+              <label>Estado de los rines:</label>
+              <input
+                type="text"
+                name="estadoRines"
+                value={revision.seguridad.estadoRines || ""}
+                onChange={(e) => handleChange(e, "seguridad")}
+              />
+            </div>
+
+            <div style={{ gridColumn: "1 / -1" }}>
+              <label>Observaciones llantas/rines:</label>
+              <input
+                type="text"
+                name="observacionesLlantasRines"
+                value={revision.seguridad.observacionesLlantasRines || ""}
+                onChange={(e) => handleChange(e, "seguridad")}
+              />
+            </div>
+          </div>
         </div>
 
         {/* Observaciones generales */}
-        <label>Observaciones generales del sistema eléctrico:</label>
-        <textarea
-          name="observacionesElectricidad"
-          value={revision.electricidad.observacionesElectricidad || ""}
-          onChange={(e) => handleChange(e, "electricidad")}
-          style={{ ...inputStyle, height: "60px" }}
-        />
+        <div className="section-box">
+          <h4 className="subsection-title">Observaciones generales de seguridad</h4>
+          <textarea
+            name="observacionesSeguridad"
+            value={revision.seguridad.observacionesSeguridad}
+            onChange={(e) => handleChange(e, "seguridad")}
+            style={{ width: "100%", height: "60px" }}
+          />
+        </div>
       </div>
+    )}
+
+    {seccionActiva === "ambiental" && (
+      <div>
+        <h3 className="subsection-title">Revisión Ambiental</h3>
+
+        {/* Emisiones de Gases */}
+        <div className="section-box">
+          <h4 className="subsection-title">Emisiones de Gases</h4>
+          <div className="form-grid">
+            <div>
+              <label>Emisiones:</label>
+              <select
+                name="emisiones"
+                value={revision.ambiental.emisiones}
+                onChange={(e) => handleChange(e, "ambiental")}
+              >
+                <option value="Dentro del límite">Dentro del límite</option>
+                <option value="Fuera del límite">Fuera del límite</option>
+              </select>
+            </div>
+
+            <div>
+              <label>CO (%):</label>
+              <input
+                type="number"
+                step="0.01"
+                name="co"
+                value={revision.ambiental.co || ""}
+                onChange={(e) => handleChange(e, "ambiental")}
+              />
+            </div>
+
+            <div>
+              <label>CO₂ (%):</label>
+              <input
+                type="number"
+                step="0.01"
+                name="co2"
+                value={revision.ambiental.co2 || ""}
+                onChange={(e) => handleChange(e, "ambiental")}
+              />
+            </div>
+
+            <div>
+              <label>HC (ppm):</label>
+              <input
+                type="number"
+                step="1"
+                name="hc"
+                value={revision.ambiental.hc || ""}
+                onChange={(e) => handleChange(e, "ambiental")}
+              />
+            </div>
+
+            <div>
+              <label>Opacidad (diesel):</label>
+              <input
+                type="number"
+                step="0.1"
+                name="opacidad"
+                value={revision.ambiental.opacidad || ""}
+                onChange={(e) => handleChange(e, "ambiental")}
+              />
+            </div>
+
+            <div style={{ gridColumn: "1 / -1" }}>
+              <label>Observaciones emisiones:</label>
+              <input
+                type="text"
+                name="observacionesEmisiones"
+                value={revision.ambiental.observacionesEmisiones || ""}
+                onChange={(e) => handleChange(e, "ambiental")}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Sistema de Escape */}
+        <div className="section-box">
+              <h4 className="subsection-title">Sistema de Escape</h4>
+              <div className="form-grid">
+                <div>
+                  <label>Sistema de escape:</label>
+                  <select
+                    name="escape"
+                    value={revision.ambiental.escape}
+                    onChange={(e) => handleChange(e, "ambiental")}
+                  >
+                    <option value="Aprobado">Aprobado</option>
+                    <option value="Reprobado">Reprobado</option>
+                  </select>
+                </div>
+
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <label>Observaciones escape:</label>
+                  <input
+                    type="text"
+                    name="observacionesEscape"
+                    value={revision.ambiental.observacionesEscape || ""}
+                    onChange={(e) => handleChange(e, "ambiental")}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Observaciones Generales */}
+            <div className="section-box">
+              <h4 className="subsection-title">Observaciones Generales</h4>
+              <div className="form-grid">
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <label>Observaciones ambientales generales:</label>
+                  <textarea
+                    name="observacionesAmbiental"
+                    value={revision.ambiental.observacionesAmbiental || ""}
+                    onChange={(e) => handleChange(e, "ambiental")}
+                    style={{ height: "60px", width: "100%" }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {seccionActiva === "electricidad" && (
+          <div>
+            <h3 className="subsection-title">Revisión de Electricidad</h3>
+
+            {/* Luces */}
+            <div className="section-box">
+              <h4 className="subsection-title">Luces</h4>
+              <div className="form-grid">
+                <div>
+                  <label>Luces:</label>
+                  <select
+                    name="luces"
+                    value={revision.electricidad.luces}
+                    onChange={(e) => handleChange(e, "electricidad")}
+                  >
+                    <option value="Funcionando">Funcionando</option>
+                    <option value="No Funcionando">No Funcionando</option>
+                  </select>
+                </div>
+
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <label>Observaciones luces:</label>
+                  <input
+                    type="text"
+                    name="observacionesLuces"
+                    value={revision.electricidad.observacionesLuces || ""}
+                    onChange={(e) => handleChange(e, "electricidad")}
+                  />
+                </div>
+              </div>
+            </div>
+
+          {/* Direccionales */}
+          <div className="section-box">
+            <h4 className="subsection-title">Direccionales</h4>
+            <div className="form-grid">
+              <div>
+                <label>Direccionales:</label>
+                <select
+                  name="direccionales"
+                  value={revision.electricidad.direccionales}
+                  onChange={(e) => handleChange(e, "electricidad")}
+                >
+                  <option value="Funcionando">Funcionando</option>
+                  <option value="No Funcionando">No Funcionando</option>
+                </select>
+              </div>
+
+              <div style={{ gridColumn: "1 / -1" }}>
+                <label>Observaciones direccionales:</label>
+                <input
+                  type="text"
+                  name="observacionesDireccionales"
+                  value={revision.electricidad.observacionesDireccionales || ""}
+                  onChange={(e) => handleChange(e, "electricidad")}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Claxon */}
+          <div className="section-box">
+            <h4 className="subsection-title">Claxon</h4>
+            <div className="form-grid">
+              <div>
+                <label>Claxon:</label>
+                <select
+                  name="claxon"
+                  value={revision.electricidad.claxon}
+                  onChange={(e) => handleChange(e, "electricidad")}
+                >
+                  <option value="Funcionando">Funcionando</option>
+                  <option value="No Funcionando">No Funcionando</option>
+                </select>
+              </div>
+
+              <div style={{ gridColumn: "1 / -1" }}>
+                <label>Observaciones claxon:</label>
+                <input
+                  type="text"
+                  name="observacionesClaxon"
+                  value={revision.electricidad.observacionesClaxon || ""}
+                  onChange={(e) => handleChange(e, "electricidad")}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Observaciones generales */}
+          <div className="section-box">
+            <h4 className="subsection-title">Observaciones generales del sistema eléctrico</h4>
+            <textarea
+              name="observacionesElectricidad"
+              value={revision.electricidad.observacionesElectricidad || ""}
+              onChange={(e) => handleChange(e, "electricidad")}
+              style={{ width: "100%", height: "60px" }}
+            />
+          </div>
+        </div>
       )}
 
-        {seccionActiva === "resumen" && (
-          <div>
-          <h3>Resumen de revisión</h3>
-      
-          <ul>
-            <li><strong>Frenos:</strong> {revision.seguridad.frenos}</li>
-            <li><strong>Suspensión:</strong> {revision.seguridad.suspension}</li>
-            <li><strong>Dirección:</strong> {revision.seguridad.direccion}</li>
-            <li><strong>Llantas y Rines:</strong> {revision.seguridad.llantasRines}</li>
-            <li><strong>Emisiones:</strong> {revision.ambiental.emisiones}</li>
-            <li><strong>Escape:</strong> {revision.ambiental.escape}</li>
-            <li><strong>Luces:</strong> {revision.electricidad.luces}</li>
-            <li><strong>Direccionales:</strong> {revision.electricidad.direccionales}</li>
-            <li><strong>Claxon:</strong> {revision.electricidad.claxon}</li>
-          </ul>
-      
-          <p>
-            <strong>Estado final de la revisión:</strong>{" "}
-            {calcularEstadoFinal().toUpperCase()}
-          </p>
-      
+      {seccionActiva === "resumen" && (
+        <div className="resumen-container">
+          <h3 className="resumen-header">Resumen de Revisión</h3>
+
+          <div className="resumen-section seguridad">
+            <h4>Seguridad</h4>
+            <ul>
+              <li><strong>Frenos:</strong> {revision.seguridad.frenos}</li>
+              <li><strong>Suspensión:</strong> {revision.seguridad.suspension}</li>
+              <li><strong>Dirección:</strong> {revision.seguridad.direccion}</li>
+              <li><strong>Llantas y Rines:</strong> {revision.seguridad.llantasRines}</li>
+            </ul>
+          </div>
+
+          <div className="resumen-section ambiental">
+            <h4>Ambiental</h4>
+            <ul>
+              <li><strong>Emisiones:</strong> {revision.ambiental.emisiones}</li>
+              <li><strong>Escape:</strong> {revision.ambiental.escape}</li>
+            </ul>
+          </div>
+
+          <div className="resumen-section electricidad">
+            <h4>Electricidad</h4>
+            <ul>
+              <li><strong>Luces:</strong> {revision.electricidad.luces}</li>
+              <li><strong>Direccionales:</strong> {revision.electricidad.direccionales}</li>
+              <li><strong>Claxon:</strong> {revision.electricidad.claxon}</li>
+            </ul>
+          </div>
+
+          <p><strong>Estado final de la revisión:</strong> {calcularEstadoFinal().toUpperCase()}</p>
+
           <button
             type="submit"
             onClick={() =>
@@ -704,13 +813,14 @@ export default function Revision() {
                 estadoFinal: calcularEstadoFinal()
               }))
             }
+            className="guardar-btn"
           >
             Guardar revisión
           </button>
         </div>
-      )}      
+      )}
       </form>
     </div>
-    </PortalLayout>
+    </Portal>
   );
 }

@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../css/Bienvenido.css"
+import "../css/Bienvenido.css";
 import DefaultLayout from "../layout/Portal2"; 
 
-
-const API_URL = "https://cda-back-adia.onrender.com/api/citas";
+const API_URL = "https://cda-back7-rz6z.onrender.com/api/citas";
 
 interface Cita {
   codigoCita: string;
@@ -99,117 +98,122 @@ export default function Bienvenido() {
 
   return (
     <DefaultLayout>
-    <div className="container">
-      <h1>Bienvenido a la Tecnomecánica</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <div className="buscar-cita">
-        <input
-          type="text"
-          placeholder="Ingrese el código de la cita"
-          value={codigoCita}
-          onChange={(e) => setCodigoCita(e.target.value)}
-        />
-        <button onClick={buscarCita}>Buscar</button>
-      </div>
-
-      {citaBuscada && (
-         <div className="detalle-cita">
-          <h2>Detalles de la Cita</h2>
-          <p><strong>Nombre:</strong> {citaBuscada.nombre}</p>
-          <p><strong>Correo:</strong> {citaBuscada.correo}</p>
-          <p><strong>Teléfono:</strong> {citaBuscada.telefono}</p>
-          <p><strong>Fecha:</strong> {citaBuscada.fechaCita}</p>
-          <p><strong>Hora:</strong> {citaBuscada.horaCita}</p>
-          <p><strong>Placa:</strong> {citaBuscada.placa}</p>
-          <p><strong>CDA:</strong> {citaBuscada.cdaSeleccionado}</p>
-
-          {/* Acción de realizar tecnomecánica */}
-          {(citaBuscada.estado === "Pendiente" || citaBuscada.estado === "Rechazado") && (
-            <div>
-              <button
-                onClick={handleSubmit}
-                disabled={esCitaVencida(citaBuscada.fechaCita, citaBuscada.horaCita)}
-                style={{
-                  backgroundColor: esCitaVencida(citaBuscada.fechaCita, citaBuscada.horaCita)
-                    ? "gray"
-                    : "blue",
-                  color: "white",
-                  padding: "10px 20px",
-                  cursor: esCitaVencida(citaBuscada.fechaCita, citaBuscada.horaCita) ? "not-allowed" : "pointer",
-                }}
-              >
-                {esCitaVencida(citaBuscada.fechaCita, citaBuscada.horaCita)
-                  ? "Cita Vencida"
-                  : "Realizar Tecnomecánica"}
-              </button>
-            </div>
-          )}
+      <div className="container">
+        <h1>Bienvenido a la Tecnomecánica</h1>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        <div className="buscar-cita">
+          <input
+            type="text"
+            placeholder="Ingrese el código de la cita"
+            value={codigoCita}
+            onChange={(e) => setCodigoCita(e.target.value)}
+          />
+          <button onClick={buscarCita}>Buscar</button>
         </div>
-      )}
 
-      <h2>Citas Pendientes</h2>
-      {citas.length > 0 ? (
+        {citaBuscada && (
+          <div className="detalle-cita">
+            <h2>Detalles de la Cita</h2>
+            <p><strong>Nombre:</strong> {citaBuscada.nombre}</p>
+            <p><strong>Correo:</strong> {citaBuscada.correo}</p>
+            <p><strong>Teléfono:</strong> {citaBuscada.telefono}</p>
+            <p><strong>Fecha:</strong> {citaBuscada.fechaCita}</p>
+            <p><strong>Hora:</strong> {citaBuscada.horaCita}</p>
+            <p><strong>Placa:</strong> {citaBuscada.placa}</p>
+            <p><strong>CDA:</strong> {citaBuscada.cdaSeleccionado}</p>
+
+            {/* Acción de realizar tecnomecánica */}
+            {(citaBuscada.estado === "Pendiente" || citaBuscada.estado === "Rechazado") && (
+              <div>
+                <button
+                  onClick={handleSubmit}
+                  disabled={esCitaVencida(citaBuscada.fechaCita, citaBuscada.horaCita)}
+                  style={{
+                    backgroundColor: esCitaVencida(citaBuscada.fechaCita, citaBuscada.horaCita)
+                      ? "gray"
+                      : "blue",
+                    color: "white",
+                    padding: "10px 20px",
+                    cursor: esCitaVencida(citaBuscada.fechaCita, citaBuscada.horaCita) ? "not-allowed" : "pointer",
+                  }}
+                >
+                  {esCitaVencida(citaBuscada.fechaCita, citaBuscada.horaCita)
+                    ? "Cita Vencida"
+                    : "Realizar Tecnomecánica"}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        <h2>Citas Pendientes</h2>
+        {citas.length > 0 ? (
           <div className="tabla-responsive">
             <table>
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Nombre</th>
-              <th>Correo</th>
-              <th>Teléfono</th>
-              <th>Fecha</th>
-              <th>Hora</th>
-              <th>Placa</th>
-              <th>CDA</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {citas.map((cita, index) => {
-              let botonColor = "blue";
-              let botonTexto = "Hacer Tecnomecánica";
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Nombre</th>
+                  <th>Correo</th>
+                  <th>Teléfono</th>
+                  <th>Fecha</th>
+                  <th>Hora</th>
+                  <th>Placa</th>
+                  <th>CDA</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                {citas.map((cita, index) => {
+                  let botonColor = "blue";
+                  let botonTexto = "Hacer Tecnomecánica";
 
-              // Check for "Tecnomecánica realizada" and separately check for "Aprobada"
-              if (cita.estado === "Tecnomecánica realizada") {
-                botonColor = "green";
-                botonTexto = "Tecnomecánica Realizada";
-              } else if (cita.estado === "Aprobada") {
-                botonColor = "green";
-                botonTexto = "Aprobada";
-              } else if (esCitaVencida(cita.fechaCita, cita.horaCita)) {
-                botonColor = "red";
-                botonTexto = "Cita Vencida";
-              }
+                  // Check for "Tecnomecánica realizada" and separately check for "Aprobada"
+                  if (cita.estado === "Tecnomecánica realizada") {
+                    botonColor = "green";
+                    botonTexto = "Tecnomecánica Realizada";
+                  } else if (cita.estado === "Aprobada") {
+                    botonColor = "green";
+                    botonTexto = "Aprobada";
+                  } else if (esCitaVencida(cita.fechaCita, cita.horaCita)) {
+                    botonColor = "red";
+                    botonTexto = "Cita Vencida";
+                  }
 
-              return (
-                <tr key={index}>
-                  <td>{cita.codigoCita}</td>
-                  <td>{cita.nombre}</td>
-                  <td>{cita.correo}</td>
-                  <td>{cita.telefono}</td>
-                  <td>{cita.fechaCita}</td>
-                  <td>{cita.horaCita}</td>
-                  <td>{cita.placa}</td>
-                  <td>{cita.cdaSeleccionado}</td>
-                  <td>
-                  <button
+                  return (
+                    <tr key={index}>
+                      <td>{cita.codigoCita}</td>
+                      <td>{cita.nombre}</td>
+                      <td>{cita.correo}</td>
+                      <td>{cita.telefono}</td>
+                      <td>{cita.fechaCita}</td>
+                      <td>{cita.horaCita}</td>
+                      <td>{cita.placa}</td>
+                      <td>{cita.cdaSeleccionado}</td>
+                      <td>
+                        <button
                           onClick={() => navigate(`/revision/${cita.codigoCita}`)}
-                          className={botonColor}
+                          style={{
+                            backgroundColor: botonColor,
+                            color: "white",
+                            padding: "10px 20px",
+                            cursor: cita.estado === "Tecnomecánica realizada" || esCitaVencida(cita.fechaCita, cita.horaCita) ? "not-allowed" : "pointer",
+                          }}
                           disabled={cita.estado === "Tecnomecánica realizada" || esCitaVencida(cita.fechaCita, cita.horaCita)}
                         >
-                      {botonTexto}
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-        </div>
-      ) : (
-        <p>No hay citas registradas.</p>
-      )}
-    </div>
+                          {botonTexto}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p>No hay citas registradas.</p>
+        )}
+      </div>
     </DefaultLayout>
   );
 }

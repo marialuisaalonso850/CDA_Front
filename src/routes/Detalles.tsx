@@ -5,8 +5,9 @@ import { jsPDF } from "jspdf";
 import "../css/detalles.css";
 
 // API URLs
-const API_URL = "https://cda-back-adia.onrender.com/api/citas";
-const REVISION_API_URL = "https://cda-back-adia.onrender.com/api/revisiones";
+const API_URL = "https://cda-back7-rz6z.onrender.com/api/citas";
+const REVISION_API_URL = "https://cda-back7-rz6z.onrender.com/api/revisiones";
+const EMAIL_API_URL = "https://cda-back7-rz6z.onrender.com/api/send-email"
 const PASSWORD = "admin123";
 
 // Interfaces
@@ -123,80 +124,87 @@ const Detalles = () => {
     }
   };
 
-  const generarPDF = () => {
-    if (!citaBuscada) return;
-  
+  const generarPDF = (): jsPDF => {
     const doc = new jsPDF();
-  
-    
-  
-    // Título (Centrado y con mayor espacio)
+
+    if (!citaBuscada) return doc;
+
     const title = "Comprobante de Revisión Técnico-Mecánica";
     doc.setFontSize(22);
-    doc.setFont("helvetica", "bold");
     const titleWidth = doc.getTextWidth(title);
     const titleX = (doc.internal.pageSize.width - titleWidth) / 2;
-    doc.text(title, titleX, 50); // Título centrado, separado del logo
-  
-    // Fecha de emisión (Alineada a la derecha y con más separación)
+    doc.text(title, titleX, 50);
+
     doc.setFontSize(12);
     const dateText = "Fecha de emisión: " + new Date().toLocaleDateString();
-    doc.text(dateText, doc.internal.pageSize.width - 20 - doc.getTextWidth(dateText), 60); // Fecha alineada a la derecha y un poco más abajo
-    
-    // Cuadro de información del cliente
-    doc.setFillColor(235, 235, 235); // Color de fondo gris claro
-    doc.rect(20, 70, 180, 50, 'F'); // Crear cuadro para información del cliente
-    doc.setFontSize(12);
-    doc.setFont("times", "normal");
+    doc.text(dateText, doc.internal.pageSize.width - 20 - doc.getTextWidth(dateText), 60);
+
+    doc.setFillColor(235, 235, 235);
+    doc.rect(20, 70, 180, 50, 'F');
     doc.text("Información del Cliente", 20, 80);
     doc.text(`Nombre: ${citaBuscada.nombre}`, 30, 90);
     doc.text(`Correo: ${citaBuscada.correo}`, 30, 100);
     doc.text(`Teléfono: ${citaBuscada.telefono}`, 30, 110);
     doc.text(`Placa: ${citaBuscada.placa}`, 30, 120);
-    
-    // Espaciado
-    doc.line(20, 130, 200, 130); // Línea horizontal de separación
-    
-    // Información de la cita
-    doc.setFillColor(235, 235, 235); 
-    doc.rect(20, 135, 180, 30, 'F'); 
+
+    doc.line(20, 130, 200, 130);
+
+    doc.setFillColor(235, 235, 235);
+    doc.rect(20, 135, 180, 30, 'F');
     doc.text("Detalles de la Cita", 20, 145);
     doc.text(`Fecha: ${citaBuscada.fechaCita}`, 30, 155);
     doc.text(`Hora: ${citaBuscada.horaCita}`, 30, 165);
     doc.text(`CDA: ${citaBuscada.cdaSeleccionado}`, 30, 175);
-    
-    // Detalles de la revisión (si existen)
+
     if (citaBuscada.revision) {
-      doc.setFillColor(235, 235, 235); 
-      doc.rect(20, 180, 180, 100, 'F'); 
+      doc.setFillColor(235, 235, 235);
+      doc.rect(20, 180, 180, 100, 'F');
       doc.text("Detalles de la Revisión:", 20, 190);
-      
-      // Sección de electricidad
       doc.text(`Luces delanteras: ${citaBuscada.revision.electricidad.luces}`, 30, 200);
       doc.text(`Luces traseras: ${citaBuscada.revision.electricidad.direccionales}`, 30, 210);
-      
-      // Sección de seguridad
       doc.text(`Frenos: ${citaBuscada.revision.seguridad.frenos}`, 30, 220);
       doc.text(`Neumáticos: ${citaBuscada.revision.seguridad.llantasRines}`, 30, 230);
-      
-      // Estado final
       doc.text(`Estado del motor: ${citaBuscada.revision.estadoFinal}`, 30, 240);
     }
-    
-    // Estado final de la revisión
-    doc.setFillColor(235, 235, 235); 
-    doc.rect(20, 250, 180, 30, 'F'); 
+
+    doc.setFillColor(235, 235, 235);
+    doc.rect(20, 250, 180, 30, 'F');
     doc.text("Estado de la Revisión:", 20, 260);
     doc.text(`${citaBuscada.estado || "Sin estado"}`, 30, 270);
-    
-    // Footer
+
     doc.setFontSize(10);
     doc.text("Generado por Sistema de Citas Técnicas", 20, 280);
-    
-    // Guardar el PDF
-    doc.save(`${citaBuscada.codigoCita}_revision.pdf`);
+
+    return doc;
   };
-  
+
+  const enviarPDFPorCorreo = async () => {
+    if (!citaBuscada) return;
+
+    const doc = generarPDF();
+    const pdfBase64 = doc.output("datauristring").split(",")[1];
+
+    try {
+      const response = await fetch(EMAIL_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          to: citaBuscada.correo,
+          subject: `Comprobante de revisión de ${citaBuscada.placa}`,
+          text: `Hola ${citaBuscada.nombre}, adjuntamos el comprobante de tu revisión técnico-mecánica.`,
+          pdfBase64: pdfBase64,
+          filename: `${citaBuscada.codigoCita}_revision.pdf`
+        }),
+      });
+
+      if (!response.ok) throw new Error("No se pudo enviar el correo.");
+      Swal.fire("Correo enviado", "El comprobante fue enviado exitosamente.", "success");
+    } catch (err: any) {
+      console.error("Error enviando correo:", err);
+      Swal.fire("Error", err.message || "Error al enviar el correo.", "error");
+    }
+  };
+
   const cancelarCita = async (codigo: string) => {
     const codigoLimpio = codigo.trim();
 
@@ -369,7 +377,9 @@ const Detalles = () => {
               
               {renderRevisionInfo()}
 
-              <button onClick={() => generarPDF()}>Generar PDF</button>
+             
+              <button onClick={() => generarPDF().save(`${citaBuscada.codigoCita}_revision.pdf`)}>Descargar PDF</button>
+              <button onClick={enviarPDFPorCorreo}>Enviar por Correo</button>
 
               <button onClick={() => actualizarEstadoRevision("Aprobada")} disabled={["Aprobada", "Rechazada"].includes(citaBuscada.estado || "")}>
                 Aprobar

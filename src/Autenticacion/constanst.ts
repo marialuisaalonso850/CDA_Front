@@ -1,1 +1,1 @@
-export const API_URL = "https://cda-back-adia.onrender.com/api";
+export const API_URL = "https://cda-back7-rz6z.onrender.com/api";

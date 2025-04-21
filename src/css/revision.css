@@ -1,8 +1,16 @@
-/* Contenedor principal */
 .revision-container {
+  display: flex; /* Usar flexbox para centrar */
+  flex-direction: column; /* Alinear en columna */
+  align-items: center; /* Centrar horizontalmente */
+  justify-content: center; /* Centrar verticalmente */
+  min-height: 100vh; /* Asegura que ocupe toda la altura de la ventana */
   text-align: center;
   margin-top: 30px;
 }
+li{
+  background-color: white;
+}
+
 
 .revision-title {
   margin-bottom: 20px;
@@ -10,6 +18,7 @@
   color: #333;
 }
 
+/* Detalles de la cita */
 .cita-detalles {
   margin-bottom: 20px;
   padding: 16px;
@@ -17,6 +26,7 @@
   border-radius: 8px;
   display: inline-block;
   text-align: left;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .cita-detalles h3 {
@@ -32,65 +42,172 @@
 /* Formulario */
 .revision-form {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(2, 1fr); /* Dos columnas */
+  gap: 20px; /* Espaciado entre las celdas */
   width: 90%;
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 800px; /* Ancho máximo del formulario */
+  margin: 0 auto; /* Centrar el formulario */
   text-align: left;
 }
 
-/* Secciones del formulario */
-.section {
-  background: #ffffff;
+/* Estilo para las cajas de sección */
+.section-box {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 10px;
   padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  margin-bottom: 25px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.section h3 {
-  margin-bottom: 12px;
-  color: #333;
-  font-size: 22px;
+/* Título de subsección (ej: Frenos, Dirección...) */
+.subsection-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #008000;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 5px;
 }
 
-/* Inputs y selects */
+/* Estilo de los campos de entrada */
 input[type="text"],
 input[type="number"],
 select,
 textarea {
   width: 100%;
+  padding: 12px; /* Aumentar el padding para más espacio interno */
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  margin-bottom: 10px;
+  background-color: #fff;
+  box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+  border-color: #008000;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+label {
+  display: block;
+  font-weight: 500;
+  margin-top: 12px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+/* Botón de guardar */
+.guardar-btn {
+  display: block;
+  width: 100%;
   padding: 12px;
-  margin-top: 6px;
-  margin-bottom: 16px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 15px;
-  background: #fdfdfd;
-}
-
-textarea {
-  resize: vertical;
-  min-height: 60px;
-}
-
-/* Botón */
-.submit-button {
-  padding: 12px 30px;
-  font-size: 18px;
-  border-radius: 8px;
-  background-color: #2196f3;
-  color: white;
+  font-size: 1.1em;
+  color: #fff;
+  background-color: #4caf50;
   border: none;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.25s;
-  margin-top: 20px;
+  transition: background-color 0.3s ease;
+  margin-top: 20px; /* Espacio superior para el botón */
 }
 
-.submit-button:hover {
-  background-color: #1976d2;
+.guardar-btn:hover {
+  background-color: #45a049;
 }
 
+/* Resumen de la revisión */
+.resumen-container {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 20px auto; /* Centrar el resumen */
+}
+
+.resumen-header {
+  text-align: center;
+  color: #333;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+.resumen-section {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.resumen-section h4 {
+  margin-top: 0;
+  font-size: 1.2em;
+  color: #333;
+}
+.resumen-section ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.resumen-section ul li {
+  font-size: 1em;
+  color: #555;
+  padding: 5px 0;
+}
+
+/* Estilos para las secciones de resumen */
+.seguridad {
+  border-left: 5px solid #4caf50; /* Verde para seguridad */
+}
+
+.ambiental {
+  border-left: 5px solid #2196f3; /* Azul para ambiental */
+}
+
+.electricidad {
+  border-left: 5px solid #ff9800; /* Naranja para electricidad */
+}
+
+/* Estilos para los botones de las pestañas */
+.tab-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.tab-button {
+  padding: 10px 20px;
+  border: 2px solid #ccc;        
+  border-radius: 8px;
+  background-color: #f9f9f9;      
+  cursor: pointer;
+  font-weight: 500;
+  color: #333;                    
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.tab-button:hover {
+  background-color: #e2e2e2;
+}
+
+.tab-button.active {
+  background-color: #008000;
+  color: white;
+  border-color: #008000;
+}
+
+/* Estilos para el botón de guardar */
 .submit-button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
