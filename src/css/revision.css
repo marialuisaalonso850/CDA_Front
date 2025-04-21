@@ -40,14 +40,6 @@
   text-align: left;
 }
 
-/* Secciones del formulario */
-.section {
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-}
-
 .section h3 {
   margin-bottom: 12px;
   color: #333;
@@ -68,7 +60,7 @@
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 15px;
-  color: #0056b3;
+  color: #008000;
   border-bottom: 2px solid #eee;
   padding-bottom: 5px;
 }
@@ -77,13 +69,22 @@
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+  gap: 10px;
+}
+
+.form-grid input,
+.form-grid select {
+  max-width: 230px;
 }
 
 @media (max-width: 768px) {
   .section-grid {
     grid-template-columns: 1fr;
   }
+}
+
+li{
+  background-color: #ffff;
 }
 
 input[type="text"],
@@ -115,23 +116,6 @@ label {
   margin-top: 12px;
   margin-bottom: 5px;
   color: #333;
-}
-
-/* Botón */
-.submit-button {
-  padding: 12px 30px;
-  font-size: 18px;
-  border-radius: 8px;
-  background-color: #2196f3;
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.25s;
-  margin-top: 20px;
-}
-
-.submit-button:hover {
-  background-color: #1976d2;
 }
 
 .submit-button:disabled {
@@ -167,4 +151,74 @@ label {
   background-color: #008000;
   color: white;
   border-color: #008000;
+}
+
+.resumen-container {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.resumen-header {
+  text-align: center;
+  color: #333;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+.resumen-section {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.resumen-section h4 {
+  margin-top: 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.resumen-section ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.resumen-section ul li {
+  font-size: 1em;
+  color: #555;
+  padding: 5px 0;
+}
+
+.seguridad {
+  border-left: 5px solid #4caf50; /* Verde para seguridad */
+}
+
+.ambiental {
+  border-left: 5px solid #2196f3; /* Azul para ambiental */
+}
+
+.electricidad {
+  border-left: 5px solid #ff9800; /* Naranja para electricidad */
+}
+
+.guardar-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  font-size: 1.1em;
+  color: #fff;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.guardar-btn:hover {
+  background-color: #45a049;
 }
