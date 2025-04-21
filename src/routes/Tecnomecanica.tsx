@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../css/Bienvenido.css";
 import DefaultLayout from "../layout/Portal2"; 
 
-const API_URL = "https://cda-back7-rz6z.onrender.com/api/citas";
+const API_URL = "https://cda-back-adia.onrender.com/api/citas";
 
 interface Cita {
   codigoCita: string;

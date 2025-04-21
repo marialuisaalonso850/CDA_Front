@@ -5,9 +5,9 @@ import { jsPDF } from "jspdf";
 import "../css/detalles.css";
 
 // API URLs
-const API_URL = "https://cda-back7-rz6z.onrender.com/api/citas";
-const REVISION_API_URL = "https://cda-back7-rz6z.onrender.com/api/revisiones";
-const EMAIL_API_URL = "https://cda-back7-rz6z.onrender.com/api/send-email"
+const API_URL = "https://cda-back-adia.onrender.com/api/citas";
+const REVISION_API_URL = "https://cda-back-adia.onrender.com/api/revisiones";
+const EMAIL_API_URL = "https://cda-back-adia.onrender.com/api/send-email"
 const PASSWORD = "admin123";
 
 // Interfaces

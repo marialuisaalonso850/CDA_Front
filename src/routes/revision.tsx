@@ -3,9 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import "../css/revision.css";
 import Portal from "../layout/Portal";
 
-const API_URL = "https://cda-back7-rz6z.onrender.com/api/revisiones";
-const CITA_API_URL = "https://cda-back7-rz6z.onrender.com/api/citas";
-const VEHICULO_API_URL = "https://cda-back7-rz6z.onrender.com/api/placas";
+const API_URL = "https://cda-back-adia.onrender.com/api/revisiones";
+const CITA_API_URL = "https://cda-back-adia.onrender.com/api/citas";
+const VEHICULO_API_URL = "https://cda-back-adia.onrender.com/api/placas";
 
 export interface Seguridad {
   // Frenos
