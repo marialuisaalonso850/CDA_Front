@@ -1,1 +1,1 @@
-export const API_URL = "https://cda-back7-rz6z.onrender.com/api";
+export const API_URL = "http://localhost:5000/api";

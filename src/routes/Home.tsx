@@ -22,6 +22,8 @@ export const Home = () => {
           <p style={{ fontSize: '22px', color: '#555', marginBottom: '40px' }}>
             Estamos encantados de tenerte aquí. Agenda tu cita fácilmente con el botón de abajo.
           </p>
+          
+          {/* Botón Agendar Cita */}
           <button 
             onClick={() => navigate('/citas')} 
             style={{ 
@@ -33,10 +35,29 @@ export const Home = () => {
               cursor: 'pointer', 
               fontSize: '22px',
               transition: 'background 0.3s',
-              width: '280px'
+              width: '280px',
+              marginBottom: '20px'
             }}
           >
             Agendar Cita
+          </button>
+
+          {/* Botón Pago Anticipado */}
+          <button 
+            onClick={() => navigate('/pago')} 
+            style={{ 
+              padding: '18px 36px', 
+              backgroundColor: '#28a745',
+              color: 'white', 
+              border: 'none', 
+              borderRadius: '8px', 
+              cursor: 'pointer', 
+              fontSize: '22px',
+              transition: 'background 0.3s',
+              width: '280px'
+            }}
+          >
+            Pago Anticipado
           </button>
         </div>
 
@@ -50,4 +71,3 @@ export const Home = () => {
 };
 
 export default Home;
-

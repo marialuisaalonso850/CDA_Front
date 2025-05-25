@@ -8,6 +8,7 @@ import Home from './routes/Home'
 import AgendarCita from './routes/agendarCita'
 import Login from './routes/Login'
 import Detalles from './routes/Detalles'
+import PagoAnticipado from './routes/pagoAnticipado';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/citas" element={<AgendarCita />} />
         <Route path="/detalle" element={<Detalles />} />
+        <Route path="/pago" element={<PagoAnticipado />} />
         <Route path="/protected" element={<ProtectedRoute />} /> 
       </Routes>
     </Router>
