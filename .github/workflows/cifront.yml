@@ -4,9 +4,9 @@ name: Build Vite Frontend
 
 on:
   push:
-    branches: [cicl]
+    branches: [cicd]
   pull_request:
-    branches: [cicl]
+    branches: [cicd]
 
 jobs:
   build:
