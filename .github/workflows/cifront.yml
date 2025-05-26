@@ -1,0 +1,28 @@
+# .github/workflows/frontend.yml
+
+name: Build Vite Frontend
+
+on:
+  push:
+    branches: [cicl]
+  pull_request:
+    branches: [cicl]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v3
+
+    - name: Instalar Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Instalar dependencias
+      run: npm install
+
+    - name: Compilar proyecto
+      run: npm run build
